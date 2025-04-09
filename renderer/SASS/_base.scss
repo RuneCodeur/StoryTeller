@@ -1,0 +1,24 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    font-family: inter, Arial, Helvetica, sans-serif;
+    color: black;
+}
+
+h1{
+    font-family: rotunda, Georgia, 'Times New Roman', Times, serif;
+    border: 3px blue solid;
+}
+html, body{
+    border: 3px green solid;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
