@@ -13,6 +13,7 @@ function createWindows() {
     height: 720,
     resizable: true,
     autoHideMenuBar: true,
+    icon: path.join(__dirname, 'assets/favicon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true

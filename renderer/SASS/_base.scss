@@ -11,8 +11,8 @@ h1{
     font-family: rotunda, Georgia, 'Times New Roman', Times, serif;
     border: 3px blue solid;
 }
+
 html, body{
-    border: 3px green solid;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -21,4 +21,10 @@ html, body{
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+body{
+    background-image: url('./assets/background-wood.jpg');
+    background-position: center;
+    background-size: cover;
 }
