@@ -4,12 +4,7 @@
     box-sizing: border-box;
     user-select: none;
     font-family: inter, Arial, Helvetica, sans-serif;
-    color: black;
-}
-
-h1{
-    font-family: rotunda, Georgia, 'Times New Roman', Times, serif;
-    border: 3px blue solid;
+    color: $colorFont;
 }
 
 html, body{
@@ -27,4 +22,14 @@ body{
     background-image: url('./assets/background-wood.jpg');
     background-position: center;
     background-size: cover;
+}
+
+#content{
+    background-color:antiquewhite;
+    max-width: 750px;
+    width: 750px;
+}
+
+h1, h2, h3, h4, h5, h6{
+    font-family: rotunda, 'Times New Roman', Times, serif;
 }

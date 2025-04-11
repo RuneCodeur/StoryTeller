@@ -1,0 +1,23 @@
+<div id="option">
+    <button class="return" onclick="navigation(0)">Retour</button>
+    <h1>Options</h1>
+    <h2>écrans</h2>
+    <div>
+        <p>pleins écran</p>
+        <input type="checkbox" name="fullscreen" id="checkboxFullScreen" onchange="fullScreen(this.checked)">
+    </div>
+    <div>
+        <p>choix du mode</p>
+        <button> 1 écran </button>
+        <button> 2 écrans </button>
+        <button> 1 écran + telephone</button>
+    </div>
+    <h2>audio</h2>
+    <div>
+        <p>volume</p>
+        <input type="range" name="volume" id="volume" min="0" max="10">
+    </div>
+
+</div>
+
+<script src="scripts/option.js" defer></script>
