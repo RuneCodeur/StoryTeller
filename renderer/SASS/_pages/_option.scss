@@ -8,6 +8,11 @@
     h2{
         margin: 25px 5px;
     }
+    #return{
+        position: absolute;
+        left: 5px;
+        top: 5px;
+    }
     div{
         margin: 10px;
         padding: 5px;
@@ -21,7 +26,23 @@
             height: 100%;
             display: flex;
             justify-content: flex-end;
-            margin-right: 25px;
+            
+        }
+        .ensemble-input{
+            flex-direction: row;
+            border:none;
+            max-width: max-content;
+            width: 100%;
+            min-width: 300px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            p{
+                width: 20px;
+                font-weight: bolder;
+                margin-right: 20px;
+            }
         }
     }
 }

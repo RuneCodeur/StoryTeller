@@ -1,5 +1,5 @@
 <div id="option">
-    <button class="return" onclick="navigation(0)">Retour</button>
+    <button class="button-red" id="return" onclick="goTo(0)">Retour</button>
     <h1>Options</h1>
     <h2>écrans</h2>
     <div>
@@ -8,14 +8,19 @@
     </div>
     <div>
         <p>choix du mode</p>
-        <button> 1 écran </button>
-        <button> 2 écrans </button>
-        <button> 1 écran + telephone</button>
+        <div class="ensemble-input">
+            <button onclick="open1Screen()"> 1 écran </button>
+            <button onclick="open2Screens()"> 2 écrans </button>
+            <button> 1 écran + telephone</button>
+        </div>
     </div>
     <h2>audio</h2>
     <div>
         <p>volume</p>
-        <input type="range" name="volume" id="volume" min="0" max="10">
+        <div class="ensemble-input">
+            <p id="numberVolume"></p>
+            <input oninput="updateVolume(this.value)" type="range" name="volume" id="inputVolume" min="0" max="10">
+        </div>
     </div>
 
 </div>

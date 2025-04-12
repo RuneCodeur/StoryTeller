@@ -18,10 +18,19 @@ html, body{
     flex-direction: column;
 }
 
-body{
+#page-main{
     background-image: url('./assets/background-wood.jpg');
     background-position: center;
     background-size: cover;
+}
+
+#page-2{
+    background-color: antiquewhite;
+    background-position: center;
+    background-size: cover;
+    #content{
+        width: auto;
+    }
 }
 
 #content{

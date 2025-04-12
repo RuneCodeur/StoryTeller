@@ -1,22 +1,50 @@
+let currentPage = 0;
+const idScreen = document.body.id;
+
+async function consoleLog(message){
+  window.electronAPI.sendMessage(message);
+}
+
+window.electronAPI.reloadPage((info) => {
+  navigation(info.page);
+});
+
+
+function goTo(page = 0){
+  currentPage = page;
+  navigation(page);
+  navGlobal();
+}
+
+function navGlobal(){
+  let info = {
+    page: currentPage,
+    screen:idScreen
+  }
+  window.electronAPI.navGlobal(info);
+}
+
 async function navigation(page = 0){
-  let layout = null
   switch (page) {
     case 1: // liste des histoires
-      console.log('affiche la liste des histoires pretes');
+      consoleLog('affiche la liste des histoires pretes');
       break;
       
     case 2: // liste des histoires a creer 
-      console.log('affiche la liste des histoires a creer');
+      consoleLog('affiche la liste des histoires a creer');
       break;
     
     case 3: // options
+      consoleLog('affiche les options');
       showPage('option');
       break;
   
     default: //page d'accueil
+      consoleLog('affiche la page principale');
       showPage();
       break;
   }
+  currentPage = page;
 }
 
 async function showPage(page = "accueil"){
@@ -47,4 +75,12 @@ async function showPage(page = "accueil"){
   }
 }
 
-navigation();
+function loading(){
+  navigation();
+  if(idScreen != 'page-main'){
+    window.electronAPI.getPage().then((value) => {
+      navigation(value);
+    });
+  }
+}
+loading();
