@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require("fs");
 const path = require('path');
+const db = require("./database");
 
 const configDefault = { 
   fullscreen: false,
@@ -62,6 +63,12 @@ ipcMain.handle("get-page", () => {
 ipcMain.handle("quit-app", () =>{
   app.quit();
 })
+
+ipcMain.handle("get-ready-stories", async () => {
+  let info = await db.getReadyStories();
+  console.log(info);
+  return await info;
+});
 
 function loadConfig() {
   try {
@@ -137,4 +144,7 @@ function createWindow2() {
   });
 }
 
-app.whenReady().then(createWindowMain);
+app.whenReady().then(() =>{
+  db.initializeDatabase();
+  createWindowMain();
+});

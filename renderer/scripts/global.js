@@ -28,6 +28,7 @@ async function navigation(page = 0){
   switch (page) {
     case 1: // liste des histoires
       consoleLog('affiche la liste des histoires pretes');
+      showPage('storys');
       break;
       
     case 2: // liste des histoires a creer 
