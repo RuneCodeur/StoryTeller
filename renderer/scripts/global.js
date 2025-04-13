@@ -9,7 +9,6 @@ window.electronAPI.reloadPage((info) => {
   navigation(info.page);
 });
 
-
 function goTo(page = 0){
   currentPage = page;
   navigation(page);
@@ -33,6 +32,7 @@ async function navigation(page = 0){
       
     case 2: // liste des histoires a creer 
       consoleLog('affiche la liste des histoires a creer');
+      showPage('creators');
       break;
     
     case 3: // options
@@ -72,7 +72,7 @@ async function showPage(page = "accueil"){
       document.body.appendChild(script);
     }
   } catch (e) {
-    console.log("aucun script à charger pour" + page);
+    consoleLog("aucun script à charger pour" + page);
   }
 }
 
@@ -84,4 +84,5 @@ function loading(){
     });
   }
 }
+
 loading();

@@ -45,19 +45,32 @@ function initializeDatabase() {
         );
 
     });
-  }
+}
 
 //récupère les histoires prêtes
 function getReadyStories() {
-  return new Promise((resolve, reject) => {
-    db.all("SELECT idstory, name FROM storys WHERE ready = 1", [], (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
-      }
+    return new Promise((resolve, reject) => {
+        db.all("SELECT idstory, name FROM storys WHERE ready = 1", [], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
     });
-  });
+}
+
+// récupère toutes les histoires
+function getAllStories(){
+    return new Promise((resolve, reject) => {
+        db.all("SELECT idstory, name, ready FROM storys", [], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
 }
 
 // crée une nouvelle histoire
@@ -86,6 +99,7 @@ function deleteStory(id) {
 module.exports = {
     initializeDatabase,
     getReadyStories,
+    getAllStories,
     createStory,
     deleteStory,
 };

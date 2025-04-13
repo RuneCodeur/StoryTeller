@@ -4,8 +4,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   sendMessage: (msg) => ipcRenderer.send('toMain', msg),
   
   // page storys
-  getreadystories: () => ipcRenderer.invoke("get-ready-stories"),
+  getReadyStories: () => ipcRenderer.invoke("get-ready-stories"),
   
+  // page création d'histoire
+  getAllStories: () => ipcRenderer.invoke("get-all-stories"),
+  createStory: (value) => ipcRenderer.invoke("create-story", value),
+
   // navigation
   navGlobal: (value) => ipcRenderer.invoke("nav-global", value),
   reloadPage: (callback) => ipcRenderer.on("reload-page", (event, data) => callback(data)),

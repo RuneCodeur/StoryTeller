@@ -48,6 +48,17 @@ ipcMain.handle("nav-global", (event, value) => {
 });
 
 
+ipcMain.handle("create-story", async (event, value) => {
+  try {
+    let result = await db.createStory(value);
+    return result
+  }
+  catch (error) {
+    console.error("erreur:", err);
+    return {error: err.message}
+  }
+});
+
 ipcMain.handle("get-volume", () => {
   return config.volume;
 });
@@ -63,6 +74,11 @@ ipcMain.handle("get-page", () => {
 ipcMain.handle("quit-app", () =>{
   app.quit();
 })
+
+ipcMain.handle("get-all-stories", async () => {
+  let info = await db.getAllStories();
+  return await info;
+});
 
 ipcMain.handle("get-ready-stories", async () => {
   let info = await db.getReadyStories();
@@ -128,7 +144,7 @@ function createWindow2() {
   secondaryWindow = new BrowserWindow({
     width: 600,
     minWidth: 450,
-    height: 450,
+    height: 600,
     minHeight: 600,
     autoHideMenuBar: true,
     icon: path.join(__dirname, 'assets/favicon.ico'),

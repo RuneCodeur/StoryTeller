@@ -10,7 +10,6 @@ function updateVolume(value){
 }
 
 function open2Screens() {
-  consoleLog('lance le screen 2')
   window.electronAPI.open2Screens();
   navGlobal();
 }

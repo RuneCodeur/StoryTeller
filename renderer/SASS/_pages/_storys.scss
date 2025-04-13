@@ -1,0 +1,17 @@
+#storys{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+    position: relative;
+    #return{
+        position: absolute;
+        left: 5px;
+        top: 5px;
+    }
+    #ensemble-storys{
+        height: 300px;
+        max-height: 300px;
+    }
+}

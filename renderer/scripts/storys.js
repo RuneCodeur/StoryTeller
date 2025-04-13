@@ -1,5 +1,5 @@
 async function chargePage(){
-  window.electronAPI.getreadystories().then((value) => {
+  window.electronAPI.getReadyStories().then((value) => {
     consoleLog(value);
   });
 }
