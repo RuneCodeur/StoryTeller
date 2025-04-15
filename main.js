@@ -9,6 +9,8 @@ const configDefault = {
 }
 
 let currentPage = 0;
+let idStory = null;
+let numChapter = null;
 let mainWindow;
 let secondaryWindow;
 const configPath = path.join(app.getPath("userData"), "config.json");
@@ -32,6 +34,8 @@ ipcMain.on("open-2-screens", () => {
 
 ipcMain.handle("nav-global", (event, value) => {
   currentPage = value.page;
+  idStory = value.idStory;
+  numChapter = value.numChapter;
 
   switch (value.screen) {
     case 'page-main':

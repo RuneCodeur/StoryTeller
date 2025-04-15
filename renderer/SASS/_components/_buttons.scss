@@ -12,11 +12,16 @@ button{
 }
 
 button:hover{
+    background-color: $colorHover;
+}
+
+.button-hover:hover{
     transform: scale(1.1);
     background-color: $colorHover;
 }
 
 .button-red{
+    font-size: 1.1rem;
     background-color:darken($color: $colorAlert, $amount: 10) ;
     color: white;
 }
@@ -54,6 +59,7 @@ input[type="checkbox"]{
 }
 
 input[type="range"]{
+    cursor: pointer;
     max-width: 100%;
     width: 250px;
     accent-color: black;

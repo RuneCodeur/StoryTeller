@@ -1,4 +1,6 @@
 let currentPage = 0;
+let idStory = null;
+let idChapter = null;
 const idScreen = document.body.id;
 
 async function consoleLog(message){
@@ -6,24 +8,30 @@ async function consoleLog(message){
 }
 
 window.electronAPI.reloadPage((info) => {
+  consoleLog(info);
   navigation(info.page);
 });
 
-function goTo(page = 0){
+
+function goTo(page = 0, story = null, chapter = null){
   currentPage = page;
-  navigation(page);
+  idStory = story;
+  idChapter = chapter
+  navigation(page, story, chapter);
   navGlobal();
 }
 
 function navGlobal(){
   let info = {
     page: currentPage,
+    idStory: idStory,
+    numChapter: idChapter,
     screen:idScreen
   }
   window.electronAPI.navGlobal(info);
 }
 
-async function navigation(page = 0){
+async function navigation(page = 0, story = null, chapter){
   switch (page) {
     case 1: // liste des histoires
       consoleLog('affiche la liste des histoires pretes');
@@ -32,12 +40,22 @@ async function navigation(page = 0){
       
     case 2: // liste des histoires a creer 
       consoleLog('affiche la liste des histoires a creer');
-      showPage('creators');
+      showPage('creator-storys');
       break;
     
     case 3: // options
       consoleLog('affiche les options');
       showPage('option');
+      break;
+
+    case 4: // histoire en mode création
+      consoleLog('affiche lhistoire numero ' + story + ' (mode creation)');
+      if(story == null){
+        showPage('creator-storys');
+      }
+      else{
+        showPage('creator-story');
+      }
       break;
   
     default: //page d'accueil

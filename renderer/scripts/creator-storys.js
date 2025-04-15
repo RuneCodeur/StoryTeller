@@ -21,7 +21,7 @@ async function chargePage(){
                 colorIsReady = "green"
                 textIsReady = "complet"
             }
-            storys += "<button onclick='showCreator(" + story.idstory + ")'><p>" + story.name + "</p><p class='is-ready " + colorIsReady + "'>" + textIsReady + "</p></button>"
+            storys += "<li><button class='creator-story' onclick='goTo(4, " + story.idstory + ")'><p class='title'>" + story.name + "</p><p class='is-ready " + colorIsReady + "'>" + textIsReady + "</p></button></li>"
         });
         ensembleStorys.innerHTML = storys;
     });
