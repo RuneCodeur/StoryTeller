@@ -10,7 +10,7 @@ const configDefault = {
 
 let currentPage = 0;
 let idStory = null;
-let numChapter = null;
+let idChapter = null;
 let mainWindow;
 let secondaryWindow;
 const configPath = path.join(app.getPath("userData"), "config.json");
@@ -35,7 +35,7 @@ ipcMain.on("open-2-screens", () => {
 ipcMain.handle("nav-global", (event, value) => {
   currentPage = value.page;
   idStory = value.idStory;
-  numChapter = value.numChapter;
+  idChapter = value.idChapter;
 
   switch (value.screen) {
     case 'page-main':
@@ -51,13 +51,67 @@ ipcMain.handle("nav-global", (event, value) => {
 
 });
 
-
 ipcMain.handle("create-story", async (event, value) => {
   try {
     let result = await db.createStory(value);
     return result
   }
-  catch (error) {
+  catch (err) {
+    console.error("erreur:", err);
+    return {error: err.message}
+  }
+});
+
+ipcMain.handle("update-story", async (event, value) => {
+  try {
+    let result = await db.updateStory(value);
+    return result
+  }
+  catch (err) {
+    console.error("erreur:", err);
+    return {error: err.message}
+  }
+});
+
+ipcMain.handle("delete-story", async (event, value) => {
+  try {
+    let result = await db.deleteStory(value);
+    return result
+  }
+  catch (err) {
+    console.error("erreur:", err);
+    return {error: err.message}
+  }
+});
+
+ipcMain.handle("create-chapter", async () => {
+  try {
+    let result = await db.createChapter(idStory);
+    return result
+  }
+  catch (err) {
+    console.error("erreur:", err);
+    return {error: err.message}
+  }
+});
+
+ipcMain.handle("update-chapter", async (event, value) => {
+  try {
+    let result = await db.updateChapter(value);
+    return result
+  }
+  catch (err) {
+    console.error("erreur:", err);
+    return {error: err.message}
+  }
+});
+
+ipcMain.handle("delete-chapter", async (event, value) => {
+  try {
+    let result = await db.deleteChapter(value);
+    return result
+  }
+  catch (err) {
     console.error("erreur:", err);
     return {error: err.message}
   }
@@ -75,17 +129,35 @@ ipcMain.handle("get-page", () => {
   return currentPage;
 });
 
+ipcMain.handle("get-id-story", () => {
+  return idStory;
+});
+
+ipcMain.handle("get-id-chapter", () => {
+  return idChapter;
+});
+
+ipcMain.handle("get-story", async () => {
+  let info = await db.getStory(idStory);
+  return await info;
+});
+
+ipcMain.handle("get-chapters", async () => {
+  let info = await db.getChapters(idStory);
+  return await info;
+});
+
 ipcMain.handle("quit-app", () =>{
   app.quit();
 })
 
-ipcMain.handle("get-all-stories", async () => {
-  let info = await db.getAllStories();
+ipcMain.handle("get-all-storys", async () => {
+  let info = await db.getAllStorys();
   return await info;
 });
 
-ipcMain.handle("get-ready-stories", async () => {
-  let info = await db.getReadyStories();
+ipcMain.handle("get-ready-storys", async () => {
+  let info = await db.getReadyStorys();
   console.log(info);
   return await info;
 });
@@ -110,7 +182,7 @@ function createWindowMain() {
     width: 1280,
     minWidth: 900,
     height: 720,
-    minHeight: 600,
+    minHeight: 620,
     resizable: true,
     fullscreen: config.fullscreen,
     autoHideMenuBar: true,

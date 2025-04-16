@@ -1,0 +1,61 @@
+#creator-story{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+    position: relative;
+    #return{
+        position: absolute;
+        left: 5px;
+        top: 5px;
+    }
+    #name-story{
+        width: 100%;
+        max-width: 100%;
+        margin-top: 65px;
+    }
+    .actions{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin: 10px;
+        .red{
+            border: 3px $colorAlert solid;
+            color: $colorAlert;
+        }
+        .green{
+            border: 3px $colorValid solid;
+            color: $colorValid;
+        }
+    }
+    #ensemble-chapters{
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        flex-wrap: wrap;
+        width: 100%;
+        padding: 0;
+        li{
+            margin: 5px;
+            width: calc( calc( calc(100% - 10px) /10 ) - 10px );
+            height: 60px;
+            button{
+                width: 100%;
+                height: 100%;
+                font-size: 1rem;
+                text-align: center;
+                padding: 0;
+            }
+        }
+    }
+}
+
+#page-2 #ensemble-chapters{
+    li{
+        width: calc( calc( calc(100% - 10px) /5 ) - 10px );
+    }
+}

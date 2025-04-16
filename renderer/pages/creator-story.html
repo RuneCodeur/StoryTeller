@@ -1,5 +1,14 @@
-<div id="creators">
+<div id="creator-story">
     <button class="button-red" id="return" onclick="goTo(2)">Retour</button>
-    <h1>histoire</h1>
+    <input onkeyup="updateStoryName()" onchange="updateStoryName()" type="text" name="name-story" id="name-story">
 
+    <div class="actions">
+        <button class="button-hover" onclick="updateIsReady()" id="button-is-ready"> - </button>
+        <button class="button-hover" onclick="addChapter()">Ajouter un chapitre</button>
+    </div>
+    
+    <h2>Chapitres</h2>
+    <ul id="ensemble-chapters"></ul>
+
+    <button class="button-red button-hover" onclick="deleteStory()">Supprimer l'histoire</button>
 </div>

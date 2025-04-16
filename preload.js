@@ -4,11 +4,20 @@ contextBridge.exposeInMainWorld('electronAPI', {
   sendMessage: (msg) => ipcRenderer.send('toMain', msg),
   
   // page storys
-  getReadyStories: () => ipcRenderer.invoke("get-ready-stories"),
+  getReadyStorys: () => ipcRenderer.invoke("get-ready-storys"),
+  getStory: (value) => ipcRenderer.invoke("get-story", value),
+  getChapters: () => ipcRenderer.invoke("get-chapters"),
+  getIdStory:() => ipcRenderer.invoke("get-id-story"),
+  getIdChapter:() => ipcRenderer.invoke("get-id-chapter", value),
   
   // page création d'histoire
-  getAllStories: () => ipcRenderer.invoke("get-all-stories"),
+  getAllStorys: () => ipcRenderer.invoke("get-all-storys"),
   createStory: (value) => ipcRenderer.invoke("create-story", value),
+  updateStory: (value) => ipcRenderer.invoke("update-story", value),
+  deleteStory: (value) => ipcRenderer.invoke("delete-story", value),
+  createChapter: () => ipcRenderer.invoke("create-chapter"),
+  updateChapter: (value) => ipcRenderer.invoke("update-chapter", value),
+  deleteChapter: (value) => ipcRenderer.invoke("delete-chapter", value),
 
   // navigation
   navGlobal: (value) => ipcRenderer.invoke("nav-global", value),

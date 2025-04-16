@@ -11,7 +11,7 @@ function createStory(){
 }
 
 async function chargePage(){
-    window.electronAPI.getAllStories().then((value) => {
+    window.electronAPI.getAllStorys().then((value) => {
         let ensembleStorys = document.getElementById('ensemble-storys');
         let storys = ''
         value.forEach(story => {

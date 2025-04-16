@@ -13,9 +13,13 @@ html, body{
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: column;
+}
+
+body{
+    margin-top: 25px;
 }
 
 #page-main{
@@ -26,7 +30,7 @@ html, body{
 
 #page-2{
     background-color: antiquewhite;
-    justify-content: flex-start;
+    margin: 0;
     #content{
         width: auto;
     }
@@ -43,9 +47,14 @@ h1, h2, h3, h4, h5, h6{
     align-items: center;
     justify-content: center;
     width: 100%;
+    min-width: 410px;
     font-family: rotunda, 'Times New Roman', Times, serif;
 }
 
 h1{
     margin-top: 15px;
+}
+
+ul{
+    list-style-type: none;
 }
