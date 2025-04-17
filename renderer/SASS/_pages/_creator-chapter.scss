@@ -1,0 +1,85 @@
+#creator-chapter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+    position: relative;
+    #position-chapter{
+        margin-top: 20px;
+    }
+    #return{
+        position: absolute;
+        left: 5px;
+        top: 5px;
+    }
+    #name-chapter{
+        width: 100%;
+        max-width: 100%;
+        margin-top: 65px;
+    }
+
+    #texte-chapter{
+        margin: 15px 0 ;
+    }
+
+    .ensemble-image{
+        margin: 25px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        img{
+            width: 300px;
+            height: 300px;
+            margin: 5px;
+            object-fit: contain;
+        }
+    }
+    #ensemble-butons{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+        margin-bottom: 50px;
+        li{
+            width: 100%;
+            margin: 5px;
+            border: 3px black solid;
+            background-color: rgba(0, 0, 0, 0.10);
+            border-radius: 5px;
+            display: flex;
+            justify-content:space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            .button-name{
+                margin-left: 5px;
+            }
+            .button-type, .button-redirect{
+                min-width: 60px;
+            }
+            .button-type {
+                height: 30px;
+            }
+
+            .ensemble-next-chapter{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                flex-wrap: wrap;
+                border: 2px black solid;
+                border-radius: 5px;
+                margin: 5px;
+                padding: 5px;
+                p{
+                    text-align: center;
+                }
+                .button-redirect{
+                    margin-top: 5px;
+                }
+            }
+        }
+    }
+}

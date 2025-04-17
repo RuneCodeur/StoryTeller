@@ -1,22 +1,3 @@
-// envoie de la maj de l'histoire
-function updateStory(){
-    window.electronAPI.getIdStory().then((idStory) => {
-        let isReady = document.getElementById('button-is-ready').dataset.ready;
-        if(!isReady){
-            isReady = 0;
-        }
-        let value = {
-            idStory: idStory,
-            name: document.getElementById('name-story').value,
-            isReady: isReady
-        }
-        window.electronAPI.updateStory(value).then(() => {
-            chargePage();
-        })
-    })
-    navGlobal();
-}
-
 // supprimer l'histoire
 function deleteStory(){
     window.electronAPI.getIdStory().then((idStory) => {
@@ -40,7 +21,8 @@ function updateStoryName(){
     if(!name){
         return
     }
-    updateStory()
+    window.electronAPI.updateStoryName(name);
+    navGlobal();
 }
 
 // maj du statut complet ou incomplet
@@ -52,18 +34,20 @@ function updateIsReady(){
         value = 0;
     }
     document.getElementById('button-is-ready').dataset.ready = value;
-    updateStory();
+    window.electronAPI.updateStoryReady(value);
+    navGlobal();
+    chargePage();
 }
 
 // charge les chapitres
 function chargeChapters(){
     window.electronAPI.getChapters().then((value) => {
         let ensembleChapters = document.getElementById('ensemble-chapters');
-        let num = 0;
+        let positionChapter = 0;
         let chapters = '';
         value.forEach(chapter => {
-            num ++;
-            chapters += "<li><button class='creator-chapter' onclick='goTo(5, " + chapter.idstory + ", " + chapter.idchapter + ")'>" + num + "</button></li>";
+            positionChapter ++;
+            chapters += "<li><button class='creator-chapter' onclick='goTo(5, " + chapter.idstory + ", " + chapter.idchapter + ")'>" + positionChapter + "</button></li>";
         });
         ensembleChapters.innerHTML = chapters;
     })

@@ -64,3 +64,12 @@ input[type="range"]{
     width: 250px;
     accent-color: black;
 }
+
+textarea{
+    width: 100%;
+    max-width: 100%;
+    min-width: 100%;
+    min-height: 100px;
+    padding: 5px;
+    resize: vertical;
+}

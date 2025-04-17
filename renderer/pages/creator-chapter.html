@@ -1,16 +1,16 @@
-<div id="creator-story">
-    <button class="button-red" id="return" onclick="goTo(2)">Retour</button>
-    <h2>chapitre X</h2>
-    <input onkeyup="" onchange="" placeholder="nom du chapitre..." type="text" name="name-story" id="name-story">
+<div id="creator-chapter">
+    <button class="button-red" id="return" onclick="goTo(4)">Retour</button>
+    <h2 id="position-chapter">chapitre</h2>
+    <input onkeyup="updateChapterName()" onchange="updateChapterName()" placeholder="Nom du chapitre..." type="text" name="name-chapter" id="name-chapter">
+    <textarea onkeyup="updateChapterTexte()" onchange="updateChapterTexte()" name="texte-chapter" id="texte-chapter" placeholder="Texte..."></textarea>
+    <div class="ensemble-image">
+        <img id="image-preview">
+        <button class="button-hover" onclick="updateImageChapter()">Choisir une image</button>
+    </div>
 
-    <p>texte de l'histoire</p>
-    <p>image de l'histoire</p>
-
-    <p>liste des boutons</p>
-    <p>bouton texte</p>
-    <p>bouton type</p>
-    <p>bouton son/redirection</p>
-
+    <h2>boutons</h2>
+    <button class="button-hover" onclick="createButton()">Nouveau bouton</button>
+    <ul id="ensemble-butons"></ul>
     
-    <button class="button-red button-hover" onclick="">Supprimer le chapitre</button>
+    <button class="button-red button-hover" onclick="deleteChapter()">Supprimer le chapitre</button>
 </div>
