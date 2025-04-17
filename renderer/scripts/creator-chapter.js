@@ -165,7 +165,7 @@ async function chargePage(){
         
 
         if(isFile){
-            document.getElementById('image-preview').src = imageFolder + "\\" + chapter.imagelink;
+            document.getElementById('image-preview').src = file;
         }
         chargeButtons();
     })

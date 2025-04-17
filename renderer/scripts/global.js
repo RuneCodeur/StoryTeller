@@ -37,7 +37,6 @@ function navGlobal(){
 async function navigation(page = 0, story = null, chapter){
   switch (page) {
     case 1: // liste des histoires
-      consoleLog('affiche la liste des histoires pretes');
       showPage('storys');
       break;
       
@@ -64,6 +63,15 @@ async function navigation(page = 0, story = null, chapter){
       }
       else{
         showPage('creator-chapter');
+      }
+      break;
+
+    case 6: // lecture de l'histoire
+      if(story == null ){
+        showPage('storys');
+      }
+      else{
+        showPage('story');
       }
       break;
   
@@ -98,7 +106,7 @@ async function showPage(page = "accueil"){
       document.body.appendChild(script);
     }
   } catch (e) {
-    consoleLog("aucun script à charger pour" + page);
+    consoleLog("aucun script à charger pour " + page);
   }
 }
 

@@ -1,0 +1,79 @@
+#story{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 10px;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    overflow: hidden;
+    #screen-image{
+        padding: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 75%;
+        height: 80%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        h1{
+            color: $colorButton;
+        }
+        img{
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+    }
+    #screen-texte{
+        padding: 20px;
+        margin: 10px;
+        border-radius: 5px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        height:calc(80% - 20px);
+        width: calc(25% - 20px);
+        text-align: left;
+        overflow: auto;
+        color: $colorButton;
+    }
+    #screen-action{
+        padding: 10px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 20%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+    }
+}
+
+#story.mode1{
+    #screen-texte{
+        background-color: $colorBackground;
+    }
+}
+
+#story.mode2{
+    #screen-image{
+        width: 100%;
+        height: 100%;
+    }
+    #screen-texte{
+        height:calc(80% - 20px);
+        width: calc(100% - 20px);
+        background-color: rgba(0, 0, 0, 0);
+    }
+}

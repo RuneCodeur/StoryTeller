@@ -48,5 +48,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getVolume: () => ipcRenderer.invoke("get-volume"),
   setFullscreen: (value) => ipcRenderer.invoke("set-fullscreen", value),
   getFullscreen: () => ipcRenderer.invoke("get-fullscreen"),
+  getModeScreen: () => ipcRenderer.invoke("get-mode-screen"),
   quitApp: () => ipcRenderer.invoke("quit-app"),
 });

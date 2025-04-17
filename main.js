@@ -14,6 +14,7 @@ let idStory = null;
 let idChapter = null;
 let mainWindow;
 let secondaryWindow;
+let modScreen = 1;
 
 const imageFolder = path.join(app.getPath("userData"), "images");
 const audioFolder = path.join(app.getPath("userData"), "audio");
@@ -27,12 +28,14 @@ ipcMain.on("open-1-screen", () => {
   const allWindows = BrowserWindow.getAllWindows();
   for (const win of allWindows) {
     if (win !== mainWindow) {
+      modScreen = 1;
       win.close();
     }
   }
 });
 
 ipcMain.on("open-2-screens", () => {
+  modScreen = 2;
   createWindow2();
 });
 
@@ -370,6 +373,10 @@ ipcMain.handle("get-buttons", async () => {
   return await info;
 });
 
+ipcMain.handle("get-mode-screen", () => {
+  return modScreen;
+});
+
 ipcMain.handle("quit-app", () =>{
   app.quit();
 })
@@ -381,7 +388,6 @@ ipcMain.handle("get-all-storys", async () => {
 
 ipcMain.handle("get-ready-storys", async () => {
   let info = await db.getReadyStorys();
-  console.log(info);
   return await info;
 });
 
@@ -472,7 +478,15 @@ function createWindow2() {
   secondaryWindow.loadFile("renderer/page-2.html");
 
   secondaryWindow.on("closed", () => {
+    modScreen = 1;
     secondaryWindow = null;
+
+    let value = {
+      page: currentPage,
+      idStory: idStory,
+      idChapter: idChapter,
+    }
+    mainWindow.webContents.send("reload-page", value);
   });
 }
 
