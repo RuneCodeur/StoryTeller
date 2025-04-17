@@ -1,3 +1,15 @@
+async function transition(){
+  let transition = document.getElementById('transition');
+
+  transition.classList.remove('transition-inactive');
+  transition.classList.add('transition-active');
+
+  setTimeout(function() { 
+    transition.classList.remove('transition-active');
+    transition.classList.add('transition-inactive');
+  }, 2200); 
+}
+
 async function showImage(){
   let screenImage = document.getElementById('screen-image');
   let idChapter = await window.electronAPI.getIdChapter();
@@ -79,9 +91,12 @@ async function nextChapter(idButton = null){
     idChapter: idButton,
     screen:idScreen
   }
-
-  window.electronAPI.navGlobal(info);
-  chargePage()
+  transition();
+  
+  setTimeout(function() { 
+    window.electronAPI.navGlobal(info);
+    chargePage()
+  }, 900);
 }
 
 // fin de l'histoire, go sur l'écran de démarage

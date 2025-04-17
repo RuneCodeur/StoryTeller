@@ -58,3 +58,23 @@ h1{
 ul{
     list-style-type: none;
 }
+
+#transition{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    z-index: 5000;
+    opacity: 0;
+}
+
+.transition-inactive{
+    display: none;
+}
+
+.transition-active{
+    display: flex;
+    animation: transition-active ease-in-out 2.5s;
+}
