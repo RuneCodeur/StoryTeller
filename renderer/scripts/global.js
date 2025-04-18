@@ -15,7 +15,6 @@ window.electronAPI.reloadPage((info) => {
   navigation(info.page, info.idStory, info.idChapter);
 });
 
-
 function goTo(page = 0, story = null, chapter = null){
   currentPage = page;
   idStory = story;
@@ -35,6 +34,14 @@ function navGlobal(){
 }
 
 async function navigation(page = 0, story = null, chapter){
+  let modeScreen = await window.electronAPI.getModeScreen();
+
+  if(idScreen == "page-2"){
+    if(modeScreen == 3){
+      page = 7;
+    }
+  }
+
   switch (page) {
     case 1: // liste des histoires
       showPage('storys');
@@ -74,6 +81,9 @@ async function navigation(page = 0, story = null, chapter){
         showPage('story');
       }
       break;
+    case 7: // affiche le qrcode pour la version mobile
+      showPage('qrcode');
+      break;
   
     default: //page d'accueil
       showPage();
@@ -111,11 +121,13 @@ async function showPage(page = "accueil"){
 }
 
 function loading(){
-  navigation();
   if(idScreen != 'page-main'){
     window.electronAPI.getPage().then((value) => {
-      navigation(value);
+      navigation(value.page, value.story, value.chapter);
     });
+  }
+  else{
+    navigation();
   }
 }
 

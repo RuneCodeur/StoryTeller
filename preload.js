@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
+  mobilePageLoaded: () => ipcRenderer.send('mobile-page-loaded'),
   sendMessage: (msg) => ipcRenderer.send('toMain', msg),
   selectImageFile: () => ipcRenderer.invoke("select-image-file"),
   getImageFolder: () => ipcRenderer.invoke("get-image-folder"),
@@ -8,12 +9,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // page storys
   getReadyStorys: () => ipcRenderer.invoke("get-ready-storys"),
-  getIdStory:() => ipcRenderer.invoke("get-id-story"),
+  getIdStory: () => ipcRenderer.invoke("get-id-story"),
   getStory: () => ipcRenderer.invoke("get-story"),
   getChapters: () => ipcRenderer.invoke("get-chapters"),
   getChapter: () => ipcRenderer.invoke("get-chapter"),
-  getIdChapter:() => ipcRenderer.invoke("get-id-chapter"),
-  getButtons:() => ipcRenderer.invoke("get-buttons"),
+  getIdChapter: () => ipcRenderer.invoke("get-id-chapter"),
+  getButtons: () => ipcRenderer.invoke("get-buttons"),
   
   // page création d'histoire
   updateImageChapter: (value) =>ipcRenderer.invoke("update-image-chapter", value),
@@ -44,10 +45,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // options
   open1Screen: () => ipcRenderer.send("open-1-screen"),
   open2Screens: () => ipcRenderer.send("open-2-screens"),
+  openMobileScreenQrcode: () => ipcRenderer.send("open-mobile-screen-qrcode"),
+  getQrcodeMobile: () => ipcRenderer.invoke("get-qrcode-mobile"),
   setVolume: (value) => ipcRenderer.invoke("set-volume", value),
   getVolume: () => ipcRenderer.invoke("get-volume"),
   setFullscreen: (value) => ipcRenderer.invoke("set-fullscreen", value),
   getFullscreen: () => ipcRenderer.invoke("get-fullscreen"),
   getModeScreen: () => ipcRenderer.invoke("get-mode-screen"),
+  setWifiName: (value) => ipcRenderer.invoke("set-wifi-name", value),
+  getWifiName: () => ipcRenderer.invoke("get-wifi-name"),
   quitApp: () => ipcRenderer.invoke("quit-app"),
 });

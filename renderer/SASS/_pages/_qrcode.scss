@@ -1,0 +1,24 @@
+#qrcode{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    h1{
+        margin: 20px;
+    }
+    #wifi-name{
+        font-weight: bolder;
+    }
+    img{
+        object-fit: contain;
+        width: 75%;
+        margin: 10px;
+        height: 75%;
+    }
+}

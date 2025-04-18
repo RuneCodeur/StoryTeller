@@ -15,6 +15,9 @@
     "electron": "^35.1.4"
   },
   "dependencies": {
+    "express": "^5.1.0",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.1",
     "sqlite3": "^5.1.7"
   }
 }

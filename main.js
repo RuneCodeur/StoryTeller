@@ -2,10 +2,13 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require("fs");
 const path = require('path');
 const db = require("./database");
+const server = require('./server');
+const QRCode = require('qrcode');
 
 const configDefault = { 
   fullscreen: false,
-  volume: 7
+  volume: 7,
+  wifiName:'Mon Wifi',
 }
 
 let currentPage = 0;
@@ -39,6 +42,15 @@ ipcMain.on("open-2-screens", () => {
   createWindow2();
 });
 
+ipcMain.on('mobile-page-loaded', () => {
+  console.log("📱 La page mobile a été affichée !");
+});
+
+ipcMain.on('open-mobile-screen-qrcode', async () => {
+  createServer();
+  createWindow2();
+});
+
 ipcMain.handle("nav-global", (event, value) => {
   currentPage = value.page;
   idStory = value.idStory;
@@ -47,7 +59,9 @@ ipcMain.handle("nav-global", (event, value) => {
   switch (value.screen) {
     case 'page-main':
       if(secondaryWindow){
-        secondaryWindow.webContents.send("reload-page", value);
+        if (secondaryWindow && !secondaryWindow.isDestroyed()) {
+          secondaryWindow.webContents.send("reload-page", value);
+        }
       }
       break;
 
@@ -333,8 +347,26 @@ ipcMain.handle("get-image-folder", () => {
   return imageFolder;
 });
 
+ipcMain.handle("get-qrcode-mobile", async () => {
+  if(modScreen == 3){
+    const url = server.getLocalIpAddress() + '/mobile';
+    try {
+        const qrDataURL = await QRCode.toDataURL(url);
+        return qrDataURL;
+    } catch (err) {
+        console.error("Erreur QR Code :", err);
+        return null;
+    }
+  }
+  return '';
+});
+
 ipcMain.handle("get-volume", () => {
   return config.volume;
+});
+
+ipcMain.handle("get-wifi-name", () => {
+  return config.wifiName;
 });
 
 ipcMain.handle("get-fullscreen", () => {
@@ -342,7 +374,12 @@ ipcMain.handle("get-fullscreen", () => {
 });
 
 ipcMain.handle("get-page", () => {
-  return currentPage;
+  let value = {
+    page: currentPage,
+    story: idStory,
+    chapter: idChapter
+  }
+  return value;
 });
 
 ipcMain.handle("get-id-story", () => {
@@ -378,7 +415,14 @@ ipcMain.handle("get-mode-screen", () => {
 });
 
 ipcMain.handle("quit-app", () =>{
-  app.quit();
+  const allWindows = BrowserWindow.getAllWindows();
+  for (const win of allWindows) {
+    win.removeAllListeners('close');
+    win.close();
+  }
+  setTimeout(() => {
+    app.quit(); 
+  }, 200);
 })
 
 ipcMain.handle("get-all-storys", async () => {
@@ -446,13 +490,27 @@ function createWindowMain() {
     saveConfig(config);
   });
 
+  
+  ipcMain.handle("set-wifi-name", (event, value) => {
+    config.wifiName = value;
+    saveConfig(config);
+  });
+
   ipcMain.handle("set-volume", (event, value) => {
     config.volume = value;
     saveConfig(config);
   });
 
-  mainWindow.on('closed', () => {
-    app.quit();
+  mainWindow.on('close', (e) => {
+    e.preventDefault();
+    const allWindows = BrowserWindow.getAllWindows();
+    for (const win of allWindows) {
+      win.removeAllListeners('close');
+      win.close();
+    }
+    setTimeout(() => {
+      app.quit(); 
+    }, 200);
   });
 }
 
@@ -478,6 +536,11 @@ function createWindow2() {
   secondaryWindow.loadFile("renderer/page-2.html");
 
   secondaryWindow.on("closed", () => {
+
+    if(modScreen == 3){
+      server.stopServer();
+    }
+
     modScreen = 1;
     secondaryWindow = null;
 
@@ -487,6 +550,24 @@ function createWindow2() {
       idChapter: idChapter,
     }
     mainWindow.webContents.send("reload-page", value);
+  });
+}
+
+function createServer(){
+
+  if(modScreen !== 3){
+    server.startServer();
+    modScreen = 3;
+  }
+
+  server.io.on('connection', (socket) => {
+    console.log('connexion mobile :', socket.id);
+
+    socket.on('fromMobile', (data) => {
+        console.log('Message provenant du mobile :', data);
+    });
+
+    socket.emit('fromServer', { message: 'Connexion OK' });
   });
 }
 

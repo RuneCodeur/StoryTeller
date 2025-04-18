@@ -11,7 +11,11 @@
         <div class="ensemble-input">
             <button class="button-hover" onclick="open1Screen()"> 1 écran </button>
             <button class="button-hover" onclick="open2Screens()"> 2 écrans </button>
-            <button class="button-hover"> 1 écran + telephone</button>
+            <button class="button-hover" onclick="openMobileScreenQrcode()"> 1 écran + telephone</button>
+        </div>
+        <div class="ensemble-wifi">
+            <p>nom du wifi (mode 1 écran + téléphone uniquement)</p>
+            <input type="text" name="wifiName" id="wifiName" onchange="setWifiName(this.value)">
         </div>
     </div>
     <h2>audio</h2>
