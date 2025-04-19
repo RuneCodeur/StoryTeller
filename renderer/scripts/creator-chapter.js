@@ -2,7 +2,6 @@
 async function deleteChapter(){
     let idChapter = await API('getIdChapter');
 
-    await API('deleteImageChapter', idChapter);
     await API('deleteChapter', idChapter);
     let idStory =  await API('getIdStory');
     goTo(4, idStory);
@@ -35,7 +34,6 @@ async function updateImageChapter(){
         return;
     }
 
-    await API('deleteImageChapter',idChapter);
     await API('updateImageChapter',file);
     chargePage();
     navGlobal();

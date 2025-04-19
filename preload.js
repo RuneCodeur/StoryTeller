@@ -17,7 +17,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // page création d'histoire
   updateImageChapter: (value) =>ipcRenderer.invoke("update-image-chapter", value),
-  deleteImageChapter: (value) =>ipcRenderer.invoke("delete-image-chapter", value),
   getAllStorys: () => ipcRenderer.invoke("get-all-storys"),
   createStory: (value) => ipcRenderer.invoke("create-story", value),
   updateStory: (value) => ipcRenderer.invoke("update-story", value),

@@ -171,6 +171,7 @@ const functionMap = {
       }
       
       let newFileName = idStory + "-" + idChapter + "-" + Date.now() + path.extname(file.fileName);
+      let chapter = await db.getImageChapter(idChapter);
   
       let destination = path.join(imageFolder, newFileName);
       fs.copyFileSync(file.filePath, destination);
@@ -179,6 +180,11 @@ const functionMap = {
         imageLink: newFileName,
         idChapter: idChapter
       }
+
+      if(chapter.imagelink){
+        await functionMap.deleteImageChapter(chapter.imagelink);
+      }
+
       let result = await db.updateImageChapter(image);
       return result
   
@@ -249,7 +255,6 @@ const functionMap = {
       for (let i = 0; i < chapters.length; i++) {
         if(chapters[i].imagelink){
           await functionMap.deleteImageChapter(chapters[i].imagelink);
-
         }
       }
   
@@ -316,6 +321,11 @@ const functionMap = {
 
   deleteChapter: async (value) => {
     try {
+      let chapter = await db.getImageChapter(value);
+      if(chapter.imagelink){
+        await functionMap.deleteImageChapter(chapter.imagelink);
+      }
+
       let result = await db.deleteChapter(value);
       return result
     }
@@ -497,9 +507,6 @@ ipcMain.handle("is-file-exist", async (event, file) => {
   return functionMap.isFileExist(file);
 });
 
-ipcMain.handle("delete-image-chapter", async (event, file) => {
-  return functionMap.deleteImageChapter(file);
-});
 
 ipcMain.handle("update-image-chapter", async (event, file) => {
   return functionMap.updateImageChapter(file);
