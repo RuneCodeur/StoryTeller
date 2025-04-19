@@ -54,7 +54,7 @@
     }
 }
 
-#page-2 #ensemble-chapters{
+#page-2 #ensemble-chapters, #page-mobile #ensemble-chapters{
     li{
         width: calc( calc( calc(100% - 10px) /5 ) - 10px );
     }

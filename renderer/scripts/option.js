@@ -16,7 +16,6 @@ async function updateVolume(value){
 
 async function openMobileScreenQrcode(){
   await API('openMobileScreenQrcode');
-
   goTo(3);
 }
 

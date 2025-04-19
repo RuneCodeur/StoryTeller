@@ -119,6 +119,20 @@ async function chargePage(){
   }
 
   switch (modeScreen) {
+    case 3: // mode 1 ecrans + telephone
+
+      // ecran principal
+      if(idScreen == "page-main"){
+        showImage();
+      }
+
+      // ecran secondaire
+      if(idScreen == "page-mobile"){
+        showTexte();
+        showAction();
+      }
+
+      break;
     case 2: // mode 2 ecrans
 
       // ecran principal

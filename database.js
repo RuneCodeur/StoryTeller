@@ -127,7 +127,7 @@ function getStory(idStory){
 // récupère tout les chapitres de 1 histoire
 function getChapters(idStory){
     return new Promise((resolve, reject) => {
-        db.all("SELECT idchapter, idstory FROM chapters WHERE idstory = ?", [idStory], (err, rows) => {
+        db.all("SELECT idchapter, idstory, imagelink FROM chapters WHERE idstory = ?", [idStory], (err, rows) => {
             if (err) {
                 reject(err);
             } else {

@@ -1,6 +1,7 @@
 var currentPage = 0;
 var idStory = null;
 var idChapter = null;
+var socket = null;
 const idScreen = document.body.id;
 
 
@@ -8,18 +9,41 @@ function pause(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function API(func, value){
+async function API(func, value = null){
   let result = ''
   if(idScreen == 'page-mobile'){
-    consoleLog("communication page mobile")
-  }else{
+    if(socket == null){
+      socket = io();
+    }
+
+    if(func == 'reloadPage'){
+      reloadPageMobile();
+    }
+    
+    else{
+      return new Promise((resolve) => {
+        socket.emit('fromMobile', { route: func, value }, (response) => {
+          console.log(response);
+          resolve(response.result);
+        });
+      });
+    }
+  }
+  else{
     result = await window.electronAPI[func](value);
   }
   return result;
 }
 
 async function consoleLog(message){
+  console.log(message);
   API("sendMessage", message)
+}
+
+async function reloadPageMobile(){
+  socket.on("reload-page", (info) => {
+    reloadPage(info)
+  });
 }
 
 async function reloadPage(info) {
@@ -116,6 +140,11 @@ async function showPage(page = "accueil"){
   let pathHtml = "./pages/" + page + ".html"
   let pathScript = "./scripts/" + page + ".js"
 
+  if(idScreen == 'page-mobile'){
+    pathHtml = './renderer/pages/' + page + ".html"
+    pathScript = "./renderer/scripts/" + page + ".js"
+  }
+
   //chargement de la page html
   layout = await fetch(pathHtml).then(res => res.text());
   if(layout){
@@ -142,14 +171,13 @@ async function showPage(page = "accueil"){
 
 async function loading(){
   if(idScreen != 'page-main'){
-    consoleLog("value");
     let value = await API("getPage");
-    consoleLog(value);
-    navigation(value.page, value.story, value.chapter);
+    if(value){
+      navigation(value.page, value.story, value.chapter);
+      return;
+    }
   }
-  else{
-    navigation();
-  }
+  navigation();
 }
 
 loading();

@@ -28,18 +28,19 @@ body{
     background-size: cover;
 }
 
-#page-2{
+#page-2, #page-mobile{
     background-color: antiquewhite;
     margin: 0;
-    #content{
-        width: auto;
+    h1{
+        justify-content: flex-end;
     }
 }
 
 #content{
     background-color:antiquewhite;
     max-width: 750px;
-    width: 750px;
+    width: 100%;
+    min-width: 300px;
 }
 
 h1, h2, h3, h4, h5, h6{
@@ -47,7 +48,6 @@ h1, h2, h3, h4, h5, h6{
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-width: 410px;
     font-family: rotunda, 'Times New Roman', Times, serif;
 }
 

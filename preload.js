@@ -1,8 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  mobilePageLoaded: () => ipcRenderer.send('mobile-page-loaded'),
-  sendMessage: (msg) => ipcRenderer.send('toMain', msg),
+  sendMessage: (msg) => ipcRenderer.send('send-message', msg),
   selectImageFile: () => ipcRenderer.invoke("select-image-file"),
   getImageFolder: () => ipcRenderer.invoke("get-image-folder"),
   isFileExist: (file) => ipcRenderer.invoke("is-file-exist", file),
