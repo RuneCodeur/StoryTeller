@@ -1,3 +1,3 @@
 function quitApp(){
-  window.electronAPI.quitApp();
+  API("quitApp");
 }

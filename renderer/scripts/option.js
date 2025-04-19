@@ -1,37 +1,33 @@
-function setWifiName(value){
-  consoleLog(value);
-  window.electronAPI.setWifiName(value);
-  document.getElementById("wifiName").value = value;
+async function setWifiName(value){
+  await API('setWifiName', value);
   navGlobal();
 }
 
-function fullScreen(isCheck = false){
-  window.electronAPI.setFullscreen(isCheck);
+async function fullScreen(isCheck = false){
+  await API('setFullscreen', isCheck);
   navGlobal();
 }
 
-function updateVolume(value){
-  window.electronAPI.setVolume(value);
+async function updateVolume(value){
+  await API('setVolume', value);
   document.getElementById("numberVolume").innerText = value;
   navGlobal();
 }
 
-function openMobileScreenQrcode(){
-  window.electronAPI.openMobileScreenQrcode();
-  navGlobal();
+async function openMobileScreenQrcode(){
+  await API('openMobileScreenQrcode');
+
+  goTo(3);
 }
 
-function open2Screens() {
-  window.electronAPI.open2Screens();
-  navGlobal();
+async function open2Screens() {
+  await API('open2Screens');
+  goTo(3);
 }
 
-function open1Screen(){
-  window.electronAPI.open1Screen();
-}
-
-function openScreenMobile() {
-  consoleLog('lance le screen mobile')
+async function open1Screen(){
+  await API('open1Screen');
+  goTo(3);
 }
 
 async function chargePage(){
@@ -40,19 +36,14 @@ async function chargePage(){
   let numberVolume = document.getElementById("numberVolume");
   let wifiName = document.getElementById("wifiName");
 
-  window.electronAPI.getFullscreen().then((value) => {
-    checkboxFullScreen.checked = value;
-  });
-  
-  window.electronAPI.getVolume().then((value) => {
-    inputVolume.value = value;
-    numberVolume.innerText = value;
-  });
-  
-  window.electronAPI.getWifiName().then((value) => {
-    wifiName.value = value;
-  });
+  let fullScreen = await API('getFullscreen');
+  let volume = await API('getVolume');
+  let wifi = await API('getWifiName');
 
+  checkboxFullScreen.checked = fullScreen;
+  inputVolume.value = volume;
+  numberVolume.innerText = volume;
+  wifiName.value = wifi;
 }
 
 chargePage()

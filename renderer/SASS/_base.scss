@@ -76,5 +76,8 @@ ul{
 
 .transition-active{
     display: flex;
+}
+
+#page-main .transition-active{
     animation: transition-active ease-in-out 2.5s;
 }

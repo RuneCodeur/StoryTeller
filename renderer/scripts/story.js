@@ -12,15 +12,16 @@ async function transition(){
 
 async function showImage(){
   let screenImage = document.getElementById('screen-image');
-  let idChapter = await window.electronAPI.getIdChapter();
+  
+  let idChapter = await API('getIdChapter'); 
 
   // chapitre en cours
   if(idChapter){
-    let chapter = await window.electronAPI.getChapter();
-    let imageFolder = await window.electronAPI.getImageFolder();
+    let chapter = await API('getChapter');
+    let imageFolder = await API('getImageFolder');
 
     let file = imageFolder + "\\" + chapter.imagelink;
-    let isFile = await window.electronAPI.isFileExist(file);
+    let isFile = await API('isFileExist', file); 
   
     if(isFile){
       screenImage.innerHTML = '<img src="' + file + '">';
@@ -29,7 +30,7 @@ async function showImage(){
 
   // init
   else{
-    let story = await window.electronAPI.getStory();
+    let story = await API('getStory');
     screenImage.innerHTML = "<h1>" + story.name + "</h1>";
   }
   
@@ -37,12 +38,12 @@ async function showImage(){
 
 async function showTexte(){
   let screenTexte = document.getElementById('screen-texte');
-  let idChapter = await window.electronAPI.getIdChapter();
+  let idChapter = await API('getIdChapter');
   let texte = '';
 
   // chapitre en cours
   if(idChapter){
-    let chapter = await window.electronAPI.getChapter();
+    let chapter = await API('getChapter');
     texte = chapter.texte.replace(/\n/g, "<br>");
   }
 
@@ -51,12 +52,12 @@ async function showTexte(){
 
 async function showAction(){
   let screenAction = document.getElementById('screen-action');
-  let idChapter = await window.electronAPI.getIdChapter();
+  let idChapter = await API('getIdChapter');
   let buttonsHTML = ''
 
   // chapitre en cours
   if(idChapter){
-    let buttons = await window.electronAPI.getButtons();
+    let buttons = await API('getButtons');
   
     if(buttons.length == 0){
       buttonsHTML = '<button onclick="endStory()"> Fin de l\'histoire </button>'
@@ -78,10 +79,10 @@ async function showAction(){
 
 // chapitre suivant
 async function nextChapter(idButton = null){
-  let idStory = await window.electronAPI.getIdStory();
+  let idStory = await API('getIdStory');
 
   if(idButton == null){
-    let chapters = await window.electronAPI.getChapters();
+    let chapters = await API('getChapters');
     idButton = chapters[0].idchapter;
   }
 
@@ -91,12 +92,9 @@ async function nextChapter(idButton = null){
     idChapter: idButton,
     screen:idScreen
   }
-  transition();
   
-  setTimeout(function() { 
-    window.electronAPI.navGlobal(info);
-    chargePage()
-  }, 900);
+  API('navGlobal', info);
+  chargePage();
 }
 
 // fin de l'histoire, go sur l'écran de démarage
@@ -105,10 +103,16 @@ function endStory(){
 }
 
 async function chargePage(){
-  let idStory = await window.electronAPI.getIdStory();
-  let modeScreen = await window.electronAPI.getModeScreen();
-  document.getElementById('story').className = "mode"+modeScreen;
+  let idStory = await API('getIdStory');
+  let idChapter = await API('getIdChapter');
+  let modeScreen = await API('getModeScreen');
   
+  if(idChapter){
+    transition();
+    await pause(900);
+  }
+  
+  document.getElementById('story').className = "mode" + modeScreen;
 
   if( !idStory ){
     goTo(1);
@@ -137,7 +141,6 @@ async function chargePage(){
       showAction();
       break;
   }
-  
 }
 
 chargePage()

@@ -1,6 +1,7 @@
 async function chargePage(){
-    let qrcode = await window.electronAPI.getQrcodeMobile();
-    let wifiName = await window.electronAPI.getWifiName();
+    let qrcode = await API('getQrcodeMobile'); 
+    let wifiName = await API('getWifiName');
+    
     if(qrcode){
         document.getElementById('qrcode-image').src = qrcode;
     }

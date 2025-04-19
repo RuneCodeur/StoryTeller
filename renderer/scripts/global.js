@@ -3,17 +3,37 @@ var idStory = null;
 var idChapter = null;
 const idScreen = document.body.id;
 
-async function consoleLog(message){
-  window.electronAPI.sendMessage(message);
+
+function pause(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-window.electronAPI.reloadPage((info) => {
-  // consoleLog(info);
+async function API(func, value){
+  let result = ''
+  if(idScreen == 'page-mobile'){
+    consoleLog("communication page mobile")
+  }else{
+    result = await window.electronAPI[func](value);
+  }
+  return result;
+}
+
+async function consoleLog(message){
+  API("sendMessage", message)
+}
+
+async function reloadPage(info) {
+
+  //ne recharge pas la page si mode histoire
+  if((currentPage == 6 || info.page == 6) && info.idStory == idStory){
+    chargePage();
+    return;
+  }
   currentPage = info.page;
   idStory = info.idStory;
   idChapter = info.idChapter;
   navigation(info.page, info.idStory, info.idChapter);
-});
+}
 
 function goTo(page = 0, story = null, chapter = null){
   currentPage = page;
@@ -23,18 +43,18 @@ function goTo(page = 0, story = null, chapter = null){
   navGlobal();
 }
 
-function navGlobal(){
+async function navGlobal(){
   let info = {
     page: currentPage,
     idStory: idStory,
     idChapter: idChapter,
     screen:idScreen
   }
-  window.electronAPI.navGlobal(info);
+  await API('navGlobal', info);
 }
 
 async function navigation(page = 0, story = null, chapter){
-  let modeScreen = await window.electronAPI.getModeScreen();
+  let modeScreen = await API('getModeScreen');
 
   if(idScreen == "page-2"){
     if(modeScreen == 3){
@@ -120,11 +140,12 @@ async function showPage(page = "accueil"){
   }
 }
 
-function loading(){
+async function loading(){
   if(idScreen != 'page-main'){
-    window.electronAPI.getPage().then((value) => {
-      navigation(value.page, value.story, value.chapter);
-    });
+    consoleLog("value");
+    let value = await API("getPage");
+    consoleLog(value);
+    navigation(value.page, value.story, value.chapter);
   }
   else{
     navigation();
@@ -132,3 +153,4 @@ function loading(){
 }
 
 loading();
+API("reloadPage", reloadPage);
