@@ -160,6 +160,16 @@ async function chargePage(){
     if(isFile){
         document.getElementById('image-preview').src = file;
     }
+    
+    if(idScreen == 'page-mobile'){
+        document.getElementsByClassName('ensemble-image')[0].style.display = 'none';
+        document.getElementsByClassName('ensemble-image-mobile')[0].style.display = 'flex';
+    }else{
+        document.getElementsByClassName('ensemble-image')[0].style.display = 'flex';
+        document.getElementsByClassName('ensemble-image-mobile')[0].style.display = 'none';
+
+    }
+
     chargeButtons();
     
 }

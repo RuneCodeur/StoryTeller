@@ -4,6 +4,7 @@ const path = require('path');
 const db = require("./database");
 const server = require('./server');
 const QRCode = require('qrcode');
+const VERSION = "1.0.1";
 
 const configDefault = { 
   fullscreen: false,
@@ -28,6 +29,10 @@ const functionMap = {
 
   sendMessage: (msg) => {
     console.log('Message recu du renderer:', msg);
+  },
+
+  getVersion: () => {
+    return VERSION;
   },
 
   getPage: () => {
@@ -491,6 +496,10 @@ ipcMain.on("open-2-screens", () => {
   functionMap.open2Screen();
 });
 
+ipcMain.handle("get-version", () => {
+  return functionMap.getVersion();
+})
+
 ipcMain.on('open-mobile-screen-qrcode', async () => {
   await functionMap.openMobileScreenQrcode();
 });
@@ -756,6 +765,7 @@ function createServer(){
 
     socket.on('fromMobile', async (data, callback) => {
 
+      mainWindow.focus();
       const { route, value} = data;
       if (typeof functionMap[route] === 'function') {
         try {
@@ -766,7 +776,7 @@ function createServer(){
           }
         }
         catch (err) {
-          console.error('Erreur pendant l\'exécution de la fonction :', err);
+          console.error('Erreur pendant l\'execution de la fonction :', err);
 
           if (callback) {
             callback({ success: false, error: err.message });
@@ -775,7 +785,7 @@ function createServer(){
       }
 
       else {
-        console.warn(`Fonction "${route}" non trouvée.`);
+        console.warn(`Fonction "${route}" non trouvee.`);
         if (callback) {
           callback({ success: false, error: 'Fonction inconnue' });
         }

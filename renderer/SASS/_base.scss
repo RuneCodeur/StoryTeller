@@ -26,6 +26,7 @@ body{
     background-image: url('./assets/background-wood.jpg');
     background-position: center;
     background-size: cover;
+    overflow: hidden;
 }
 
 #page-2, #page-mobile{
@@ -41,6 +42,7 @@ body{
     max-width: 750px;
     width: 100%;
     min-width: 300px;
+    overflow: auto;
 }
 
 h1, h2, h3, h4, h5, h6{

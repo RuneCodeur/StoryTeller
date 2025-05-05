@@ -59,6 +59,10 @@
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-around;
+        .end-story{
+            background-color: $colorAlert;
+            color: white;
+        }
     }
 }
 

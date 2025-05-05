@@ -1,11 +1,14 @@
 <div id="creator-chapter">
     <button class="button-red" id="return" onclick="goTo(4)">Retour</button>
-    <h2 id="position-chapter">chapitre</h2>
+    <h1 id="position-chapter">chapitre</h1>
     <input onkeyup="updateChapterName()" onchange="updateChapterName()" placeholder="Nom du chapitre..." type="text" name="name-chapter" id="name-chapter">
     <textarea onkeyup="updateChapterTexte()" onchange="updateChapterTexte()" name="texte-chapter" id="texte-chapter" placeholder="Texte..."></textarea>
     <div class="ensemble-image">
         <img id="image-preview">
         <button class="button-hover" onclick="updateImageChapter()">Choisir une image</button>
+    </div>
+    <div class="ensemble-image-mobile">
+        <p>Choix d'une image non-disponible pour la version mobile</p>
     </div>
 
     <h2>boutons</h2>

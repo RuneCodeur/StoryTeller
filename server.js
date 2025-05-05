@@ -2,19 +2,17 @@ const express = require('express');
 const http = require('http');
 const socketio = require('socket.io');
 const os = require('os');
+const { log } = require('electron-builder');
 
 let serverInstance = null;
 let ioInstance = null;
 
 function getLocalIpAddress() {
     const interfaces = os.networkInterfaces();
-    for (const [ifaceName, ifaceConfigs] of Object.entries(interfaces)) {
-        let lowerName = ifaceName.toLowerCase();
-        if (lowerName.includes('wi-fi') || lowerName.includes('wlan')) {
-            for (const config of ifaceConfigs) {
-                if (config.family === 'IPv4' && !config.internal) {
-                    return "http://" + config.address + ":3000";
-                }
+    for (const ifaceConfigs of Object.values(interfaces)) {
+        for (const config of ifaceConfigs) {
+            if (config.family === 'IPv4' && !config.internal) {
+                return "http://" + config.address + ":3000";
             }
         }
     }
@@ -40,7 +38,7 @@ function startServer() {
 
     const port = 3000;
     server.listen(port, '0.0.0.0', () => {
-        console.log("Serveur web en écoute sur " + getLocalIpAddress() + "/mobile");
+        console.log("Serveur web en ecoute sur " + getLocalIpAddress() + "/mobile");
     });
 
     serverInstance = server;

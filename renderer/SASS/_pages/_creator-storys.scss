@@ -19,6 +19,7 @@
         align-items: center;
         #text-new-story{
             flex: 1;
+            width: calc(100% - 50px);
         }
     }
     #ensemble-storys{

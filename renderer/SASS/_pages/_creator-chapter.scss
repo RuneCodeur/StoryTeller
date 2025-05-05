@@ -5,6 +5,9 @@
     flex-direction: column;
     margin: 10px;
     position: relative;
+    h1{
+        font-size: 1.6rem;
+    }
     #position-chapter{
         margin-top: 20px;
     }
@@ -34,6 +37,17 @@
             height: 300px;
             margin: 5px;
             object-fit: contain;
+        }
+    }
+    .ensemble-image-mobile{
+        margin: 25px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        p{
+            color: $colorAlert;
+            text-align: center;
         }
     }
     #ensemble-butons{

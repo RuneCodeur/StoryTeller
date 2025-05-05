@@ -60,7 +60,7 @@ async function showAction(){
     let buttons = await API('getButtons');
   
     if(buttons.length == 0){
-      buttonsHTML = '<button onclick="endStory()"> Fin de l\'histoire </button>'
+      buttonsHTML = '<button class="end-story" onclick="endStory()"> Fin de l\'histoire </button>'
     }
     else{
       buttons.forEach(button => {
