@@ -1,10 +1,11 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, powerSaveBlocker } = require('electron');
 const fs = require("fs");
 const path = require('path');
 const db = require("./database");
 const server = require('./server');
 const QRCode = require('qrcode');
 const VERSION = "1.0.1";
+const id = powerSaveBlocker.start('prevent-display-sleep');
 
 const configDefault = { 
   fullscreen: false,

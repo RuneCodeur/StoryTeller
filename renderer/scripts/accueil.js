@@ -3,7 +3,7 @@ function quitApp(){
 }
 
 async function loadVersion(){
-  let version = await API('getVERSION');
+  let version = await API('getVersion');
   document.getElementById('version').innerHTML = "V " + version
 }
 
