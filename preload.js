@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getImageFolder: () => ipcRenderer.invoke("get-image-folder"),
   isFileExist: (file) => ipcRenderer.invoke("is-file-exist", file),
   getVersion: () => ipcRenderer.invoke("get-version"),
+  exportStory : () =>ipcRenderer.invoke("export-story"),
+  importStory : () =>ipcRenderer.invoke("import-story"),
   
   // page storys
   getReadyStorys: () => ipcRenderer.invoke("get-ready-storys"),

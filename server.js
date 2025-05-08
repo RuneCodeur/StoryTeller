@@ -9,14 +9,30 @@ let ioInstance = null;
 
 function getLocalIpAddress() {
     const interfaces = os.networkInterfaces();
-    for (const ifaceConfigs of Object.values(interfaces)) {
-        for (const config of ifaceConfigs) {
-            if (config.family === 'IPv4' && !config.internal) {
-                return "http://" + config.address + ":3000";
+    let adress = 'localhost';
+
+    for (const [ifaceName, ifaceConfigs] of Object.entries(interfaces)) {
+        let lowerName = ifaceName.toLowerCase();
+        if (lowerName.includes('wi-fi') || lowerName.includes('wlan')) {
+            for (const config of ifaceConfigs) {
+                if (config.family === 'IPv4' && !config.internal) {
+                    adress = config.address;
+                }
             }
         }
     }
-    return "http://localhost:3000/";
+
+    if(adress == 'localhost'){
+        for (const ifaceConfigs of Object.values(interfaces)) {
+            for (const config of ifaceConfigs) {
+                if (config.family === 'IPv4' && !config.internal) {
+                    adress = config.address;
+                }
+            }
+        }
+    }
+
+    return "http://" + adress + ":3000";
 }
 
 function startServer() {

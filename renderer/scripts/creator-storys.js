@@ -10,6 +10,11 @@ async function createStory(){
     chargePage();
 }
 
+async function importStory(){
+    await API('importStory');
+    chargePage();
+}
+
 async function chargePage(){
     let storys = await API('getAllStorys');
     

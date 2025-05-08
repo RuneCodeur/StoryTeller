@@ -1,10 +1,11 @@
 const { app, BrowserWindow, ipcMain, dialog, powerSaveBlocker } = require('electron');
+const JSZip = require("jszip");
 const fs = require("fs");
 const path = require('path');
 const db = require("./database");
 const server = require('./server');
 const QRCode = require('qrcode');
-const VERSION = "1.0.1";
+const VERSION = "1.1.0";
 const id = powerSaveBlocker.start('prevent-display-sleep');
 
 const configDefault = { 
@@ -142,7 +143,7 @@ const functionMap = {
     }
     else{
       return;
-    }  
+    }
   },
 
   isFileExist: (file) => {
@@ -200,6 +201,208 @@ const functionMap = {
       return {error: err.message}
     }
   },
+
+  selectStoryFile: async () =>{
+
+    if(!fileWindows){
+      fileWindows = true;
+      let result = await dialog.showOpenDialog({
+        title: "Importer une histoire",
+        properties: ["openFile"],
+        filters: [{ name: "Fichier StoryTeller", extensions: ["st"] }]
+      });
+      fileWindows = false;
+  
+      if (result.canceled || result.filePaths.length === 0) {
+        return null;
+      }
+    
+      let filePath = result.filePaths[0];
+      return filePath;
+    }
+    else{
+      return;
+    }
+  },
+
+  sanitizeNameST: async (title) =>{
+    title = title.normalize("NFD");
+    title = title.replace(/[\u0300-\u036f]/g, '');
+    title = title.replace(/[^a-zA-Z0-9]/g, '_');
+    title = title.replace(/_+/g, '_');
+    title = title.replace(/^_|_$/g, '');
+    title = title.toLowerCase();
+    return title;
+  },
+
+  importStory: async () => {
+    let filePath = await functionMap.selectStoryFile();
+    if(filePath){
+      const data = fs.readFileSync(filePath);
+      const zip = await JSZip.loadAsync(data);
+      const storyFile = zip.file('story.json');
+      let storyData = null;
+      let chaptersKey = {};
+      let imagesKey = {};
+
+      if(storyFile) {
+        const jsonContent = await storyFile.async('string');
+        storyData = JSON.parse(jsonContent);
+
+        let idStoryImport = await functionMap.createStory(storyData.title);
+        idStory = idStoryImport;
+        
+        // insertion des chapitres
+        let init = true;
+        for (const key of Object.keys(storyData.chapters)){
+          let idChapterImport = 0;
+          if(init){
+            init = false;
+            let chapters = await functionMap.getChapters();
+            idChapterImport = chapters[0].idchapter;
+          }
+          else{
+            idChapterImport = await functionMap.createChapter();
+          }
+          idChapter = idChapterImport;
+          storyData.chapters[key].newId = idChapter;
+
+          chaptersKey[key] = idChapter;
+          let chapter = {
+            name: storyData.chapters[key].name,
+            texte: storyData.chapters[key].texte,
+            idChapter: idChapter
+          }
+          await functionMap.updateChapter(chapter);
+          
+          if(storyData.chapters[key].imagelink){
+            let newFileName = idStory + "-" + idChapter + "-" + Date.now() + path.extname(storyData.chapters[key].imagelink);
+            
+            imagesKey[storyData.chapters[key].imagelink] = {
+              imagelink :newFileName,
+              idChapter : idChapter
+            }
+            await db.updateImageChapter(imagesKey[storyData.chapters[key].imagelink]);
+          }
+        }
+
+        // insertion des boutons
+        for (const key of Object.keys(storyData.chapters)){
+          idChapter = chaptersKey[key];
+          for (let i = 0; i <  storyData.chapters[key].buttons.length; i++) {
+            let idButton = await functionMap.createButton();
+            let button = {
+              name : storyData.chapters[key].buttons[i].name,
+              type : storyData.chapters[key].buttons[i].type,
+              filelink : storyData.chapters[key].buttons[i].filelink,
+              idButton : idButton
+            }
+
+            if(chaptersKey[storyData.chapters[key].buttons[i].nextchapter]){
+              button.nextChapter = chaptersKey[storyData.chapters[key].buttons[i].nextchapter]
+            }
+
+            await functionMap.updateButton(button);
+          }
+        }
+
+        // insertion des images
+        let imagesFolder = await functionMap.getImageFolder();
+
+        const imageFiles = Object.keys(zip.files).filter(filename =>
+          filename.startsWith('images/') && !zip.files[filename].dir
+        );
+
+        for (const filename of imageFiles) {
+          const file = zip.files[filename];
+          const imageBuffer = await file.async('nodebuffer');
+          const baseName = path.basename(filename);
+          if(imagesKey[baseName]){
+            const newFileName = imagesKey[baseName].imagelink;
+            const destPath = path.join(imagesFolder, newFileName);
+
+            fs.writeFileSync(destPath, imageBuffer);
+            let value = {
+              imageLink: newFileName,
+              idChapter: imagesKey[baseName].idChapter
+            }
+            await db.updateImageChapter(value)
+            console.log(`Image enregistrée : ${destPath}`);
+
+          }
+        }
+      }
+    }
+    return;
+  },
+
+  exportStory : async (id) => {
+    const zip = new JSZip();
+    let story = await db.getStory(id);
+    let imageFolder = await functionMap.getImageFolder();
+
+    let histoire = {
+      title: '',
+      chapters : {}
+    };
+
+    if(story){
+      let fileName = await functionMap.sanitizeNameST(story.name);
+      histoire.title = story.name;
+
+      let chapters = await db.getAllChapters(id);
+    
+      for (let i = 0; i < chapters.length; i++) {
+        let buttons = await db.getButtons(chapters[i].idchapter);
+
+        histoire.chapters[chapters[i].idchapter] = {}
+        histoire.chapters[chapters[i].idchapter].name = chapters[i].name;
+        histoire.chapters[chapters[i].idchapter].texte = chapters[i].texte;
+        histoire.chapters[chapters[i].idchapter].imagelink = chapters[i].imagelink;
+
+        histoire.chapters[chapters[i].idchapter].buttons = [];
+        for (let ib = 0; ib < buttons.length; ib++) {
+          histoire.chapters[chapters[i].idchapter].buttons.push({
+            name: buttons[ib].name,
+            type: buttons[ib].type,
+            filelink: buttons[ib].filelink,
+            idchapter: buttons[ib].idchapter,
+            nextchapter: buttons[ib].nextchapter,
+          })
+        }
+
+        if(chapters[i].imagelink){
+          let imagePath = path.join(imageFolder, chapters[i].imagelink);
+          let imageBuffer = fs.readFileSync(imagePath);
+          zip.file("images/" + chapters[i].imagelink, imageBuffer);
+        }
+      }
+
+      // histoire + chapitres + boutons
+      zip.file("story.json", JSON.stringify(histoire, null, 2));
+
+      // fenetre d'exportation
+      const { canceled, filePath } = await dialog.showSaveDialog(mainWindow, {
+        title: "Exporter l'histoire",
+        defaultPath: fileName + '.st',
+        filters: [
+          { name: 'Fichier StoryTeller', extensions: ['st'] }
+        ]
+      });
+
+      if (canceled || !filePath) {
+        return;
+      }
+
+      const content = await zip.generateAsync({ type: "nodebuffer" });
+      fs.writeFileSync(filePath, content);
+      console.log("Fichier enregistré :", filePath);
+    }
+  },
+
+
+
+
 
   createStory: async (name) => {
     try {
@@ -412,6 +615,7 @@ const functionMap = {
   },
 
   getImageFolder: async () => {
+    fs.mkdirSync(imageFolder, { recursive: true });
     return imageFolder;
   },
 
@@ -520,6 +724,19 @@ ipcMain.handle("is-file-exist", async (event, file) => {
 
 ipcMain.handle("update-image-chapter", async (event, file) => {
   return functionMap.updateImageChapter(file);
+});
+
+
+ipcMain.handle('import-story', async () => {
+  await functionMap.importStory();
+  return;
+});
+
+ipcMain.handle('export-story', () => {
+  if(idStory){
+    functionMap.exportStory(idStory);
+  }
+  return;
 });
 
 ipcMain.handle("create-story", async (event, value) => {

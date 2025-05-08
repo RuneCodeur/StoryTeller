@@ -137,6 +137,19 @@ function getChapters(idStory){
     });
 }
 
+// récupère tout les chapitres de 1 histoire (complet)
+function getAllChapters(idStory){
+    return new Promise((resolve, reject) => {
+        db.all("SELECT idchapter, name, texte, imagelink, idstory FROM chapters WHERE idstory = ?", [idStory], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
 // récupère le chapitre avec sa position
 function getChapter(idChapter) {
     return new Promise((resolve, reject) => {
@@ -428,6 +441,7 @@ module.exports = {
     getAllStorys,
     getStory,
     getChapters,
+    getAllChapters,
     getChapter,
     getButtons,
     createStory,

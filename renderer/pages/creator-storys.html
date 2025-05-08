@@ -2,7 +2,11 @@
     <button class="button-red" id="return" onclick="goTo(0)">Retour</button>
     <h1>Atelier</h1>
 
-    <div id="new-story"> <input id="text-new-story" type="text" maxlength="200" placeholder="nouvelle histoire..."> <button class="button-hover" onclick="createStory()">Nouveau</button></div>
-    
+    <div id="new-story"> 
+        <input id="text-new-story" type="text" maxlength="200" placeholder="nouvelle histoire..."> 
+        <button class="button-hover" onclick="createStory()">Nouveau</button>
+    </div>
+    <button onclick="importStory()">importer une histoire</button>
+
     <ul id="ensemble-storys"></ul>
 </div>

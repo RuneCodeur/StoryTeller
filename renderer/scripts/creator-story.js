@@ -12,6 +12,10 @@ async function addChapter(){
     navGlobal();
 }
 
+async function exportStory(){
+    await API('exportStory');
+}
+
 // maj du nom de la story
 async function updateStoryName(){
     let name = document.getElementById('name-story').value
