@@ -20,7 +20,11 @@
         flex-direction: column;
         justify-content:space-evenly;
         align-items: center;
-        height: 250px;
+        margin-top: 25px;
+        .button-small{
+            margin-top: 25px;
+            position: relative;
+        }
     }
 
     #version{
