@@ -127,7 +127,7 @@ function getStory(idStory){
 // récupère tout les chapitres de 1 histoire
 function getChapters(idStory){
     return new Promise((resolve, reject) => {
-        db.all("SELECT idchapter, idstory, imagelink FROM chapters WHERE idstory = ?", [idStory], (err, rows) => {
+        db.all("SELECT chapters.idchapter, chapters.idstory, chapters.name, chapters.imagelink, GROUP_CONCAT(buttons.nextchapter) AS nextchapters FROM chapters LEFT JOIN buttons ON buttons.idchapter = chapters.idchapter AND buttons.idstory = chapters.idstory WHERE chapters.idstory = ? GROUP BY chapters.idchapter, chapters.idstory", [idStory], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
