@@ -42,6 +42,10 @@ button:hover {
   background-color: #FFD23F;
 }
 
+.button-small {
+  font-size: 0.8rem;
+}
+
 .button-red {
   font-size: 1.1rem;
   background-color: #5c1e1e;
@@ -127,6 +131,7 @@ body {
   background-position: center;
   background-size: cover;
   overflow: hidden;
+  padding-bottom: 25px;
 }
 
 #page-2, #page-mobile {
@@ -206,7 +211,11 @@ ul {
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  height: 250px;
+  margin-top: 25px;
+}
+#accueil #ensemble-butons .button-small {
+  margin-top: 25px;
+  position: relative;
 }
 #accueil #version {
   margin-top: 15px;
@@ -645,4 +654,39 @@ ul {
   width: 75%;
   margin: 10px;
   height: 75%;
+}
+
+#notes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 10px;
+  position: relative;
+}
+#notes #return {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+}
+#notes .ensemble-notes {
+  margin-top: 50px;
+  padding: 0 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+#notes .ensemble-notes p {
+  text-align: justify;
+}
+#notes .ensemble-notes a {
+  font-size: 1.5rem;
+  color: black;
+}
+#notes .ensemble-notes .sign {
+  font-size: 1.2rem;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  width: 100%;
 }/*# sourceMappingURL=style.css.map */

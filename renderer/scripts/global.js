@@ -128,6 +128,10 @@ async function navigation(page = 0, story = null, chapter){
     case 7: // affiche le qrcode pour la version mobile
       showPage('qrcode');
       break;
+
+    case 8: // affiche le qrcode pour la version mobile
+      showPage('notes');
+      break;
   
     default: //page d'accueil
       showPage();

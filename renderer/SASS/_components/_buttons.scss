@@ -20,6 +20,10 @@ button:hover{
     background-color: $colorHover;
 }
 
+.button-small{
+    font-size: 0.8rem;
+}
+
 .button-red{
     font-size: 1.1rem;
     background-color:darken($color: $colorAlert, $amount: 10) ;
