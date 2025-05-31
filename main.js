@@ -5,7 +5,7 @@ const path = require('path');
 const db = require("./database");
 const server = require('./server');
 const QRCode = require('qrcode');
-const VERSION = "1.2.0";
+const VERSION = "1.3.0";
 const id = powerSaveBlocker.start('prevent-display-sleep');
 
 const configDefault = { 
@@ -544,13 +544,14 @@ const functionMap = {
     }
   },
 
-  createButton: async () => {
+  createButton: async (value) => {
     try {
-      let value = {
+      let button = {
         idStory: idStory,
-        idChapter: idChapter
+        idChapter: idChapter,
+        nextchapter: value
       }
-      let result = await db.createButton(value);
+      let result = await db.createButton(button);
       return result
     }
     catch (err) {
@@ -779,8 +780,8 @@ ipcMain.handle("delete-chapter", async (event, value) => {
   return functionMap.deleteChapter(value);
 });
 
-ipcMain.handle("create-button", async () => {
-  return functionMap.createButton();
+ipcMain.handle("create-button", async (event, value) => {
+  return functionMap.createButton(value);
 });
 
 ipcMain.handle("update-button", async (event, value) => {

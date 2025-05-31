@@ -11,6 +11,22 @@ button{
     margin: 5px;
 }
 
+.creator-chapter{
+    font-size: 1.1rem;
+}
+
+.init-chapter {
+    background-color: $chaptersStart;
+}
+
+.orphelin-chapter {
+    background-color: $chaptersOrphelin;
+}
+
+.next-chapter {
+    background-color: $chaptersHover;
+}
+
 button:hover{
     background-color: $colorHover;
 }

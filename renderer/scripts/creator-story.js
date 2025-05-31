@@ -44,21 +44,146 @@ async function updateIsReady(){
 async function chargeChapters(){
     let chapters = await API('getChapters');
 
-    let ensembleChapters = document.getElementById('ensemble-chapters');
-    let positionChapter = 0;
+    let chaptersGlobal = document.getElementById('chaptersGlobal');
+    let chaptersOrphelin = document.getElementById('chaptersOrphelin');
     let HTMLchapters = '';
 
     let posichapters = createTableau(chapters);
 
-    consoleLog(posichapters[0]); //++++++++++++++++++++++++++++++
-    
-    chapters = await API('getChapters');
-    chapters.forEach(chapter => {
-        positionChapter ++;
-        HTMLchapters += "<li><button class='creator-chapter' onclick='goTo(5, " + chapter.idstory + ", " + chapter.idchapter + ")'>" + positionChapter + "</button></li>";
-    });
-    ensembleChapters.innerHTML = HTMLchapters;
+    // affichage des chapitres
+    HTMLchapters += '<tbody>';
+    posichapters[0].forEach(lignChapters =>{
+        HTMLchapters += '<tr>';
+        lignChapters.forEach(chapter =>{
+            HTMLchapters += '<td>';
+            if(chapter.idchapter){
+                let classList = "creator-chapter ";
+                if(chapter.init){
+                    classList += "init-chapter ";
+                }
+                HTMLchapters += "<button class='" + classList + "' id='chapter-" + chapter.idchapter + "' onmouseout='unhoverChapterTab()' onmouseover='hoverChapterTab(" + chapter.idchapter + ", \"" + chapter.nextchapters + "\")' onclick='goTo(5, " + chapter.idstory + ", " + chapter.idchapter + ")'>" + chapter.name + "</button>"
+            }
+            HTMLchapters += '</td>';
+        })
 
+        HTMLchapters += '</tr>';
+    })
+    HTMLchapters += '</tbody>';
+
+    chaptersGlobal.innerHTML = HTMLchapters;
+
+    // affichage des chapitres orphelins
+    HTMLchapters = '';
+    HTMLchapters += '<tbody>';
+    posichapters[1].forEach(chapter =>{
+        HTMLchapters += '<tr><td>';
+        if(chapter.idchapter){
+            HTMLchapters += "<button class='creator-chapter orphelin-chapter' onclick='goTo(5, " + chapter.idstory + ", " + chapter.idchapter + ")'>" + chapter.name + "</button>"
+        }
+        HTMLchapters += '</td></tr>';
+    })
+    HTMLchapters += '</tbody>'
+
+    chaptersOrphelin.innerHTML = HTMLchapters;
+    chaptersLines(posichapters[0]);
+}
+
+function chaptersLines(posiChapters) {
+    let svg = document.getElementById("chapterPaths");
+    svg.innerHTML = "";
+  
+    let wrapper = document.querySelector(".chapterPrincipal");
+    let container = document.querySelector(".table-chapters");
+    
+    let containerRect = wrapper.getBoundingClientRect();
+  
+    let width = wrapper.scrollWidth;
+    let height = wrapper.scrollHeight;
+  
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+    svg.style.width = width + "px";
+    svg.style.height = height + "px";
+  
+    let chapters = [];
+  
+    posiChapters.forEach(lignChapters => {
+      lignChapters.forEach(chapter => {
+        if (chapter.idchapter) {
+          chapters.push(chapter);
+        }
+      });
+    });
+  
+    chapters.forEach(chap => {
+        if (chap.nextchapters) {
+            let fromBtn = wrapper.querySelector(`#chapter-${chap.idchapter}`);
+            if (!fromBtn) {
+                return;
+            }
+    
+            let fromRect = fromBtn.getBoundingClientRect();
+            let fromX = (fromRect.left - containerRect.left + fromRect.width / 2) + container.scrollLeft;
+            let fromY = (fromRect.bottom - containerRect.top) + container.scrollTop;
+    
+            let nextchapters = chap.nextchapters.split(',').map(Number);
+            nextchapters.forEach(nextId => {
+                let toBtn = wrapper.querySelector(`#chapter-${nextId}`);
+                if (!toBtn) {
+                    return;
+                }
+
+                let toRect = toBtn.getBoundingClientRect();
+                let toX = toRect.left - containerRect.left + toRect.width / 2 ;
+                let toY = toRect.top - containerRect.top;
+        
+                let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", fromX);
+                line.setAttribute("y1", fromY);
+                line.setAttribute("x2", toX);
+                line.setAttribute("y2", toY);
+                line.setAttribute("stroke", "black");
+                line.setAttribute("stroke-width", "2");
+                line.setAttribute("stroke-opacity", "1");
+                line.setAttribute("vector-effect", "non-scaling-stroke");
+                line.setAttribute("stroke-linecap", "round");
+                line.setAttribute("class", "line-" + chap.idchapter);
+        
+                svg.appendChild(line);
+            });
+        }
+    });
+  }
+
+function hoverChapterTab(idchapter, nextchapters){
+    let chapterPathsHover = document.getElementById('chapterPathsHover');
+    let lines = document.getElementsByClassName('line-' + idchapter);
+    let idNextChapters = nextchapters.split(',').map(Number);
+
+    for (let i = 0; i < lines.length; i++) {
+        let lineHover = lines[i].cloneNode(true);
+        lineHover.setAttribute('x1', parseFloat(lines[i].getAttribute("x1")) -0.5);
+        lineHover.setAttribute('y1', parseFloat(lines[i].getAttribute("y1")) );
+        lineHover.setAttribute('x2', parseFloat(lines[i].getAttribute("x2")) -0.5);
+        lineHover.setAttribute('y2', parseFloat(lines[i].getAttribute("y2")) );
+        lineHover.setAttribute("class", 'lineHover-' + idchapter);
+        lineHover.setAttribute("stroke", "#F4A261");
+        lineHover.setAttribute("stroke-width", "4");
+        chapterPathsHover.appendChild(lineHover);
+    }
+
+    idNextChapters.forEach(idChapter => {
+        document.getElementById('chapter-' + idChapter).classList.add("next-chapter");
+    });
+}
+
+function unhoverChapterTab(){
+    document.getElementById('chapterPathsHover').innerHTML = '';
+    let nextChapters = document.getElementsByClassName('next-chapter');
+
+    Array.from(nextChapters).forEach(nextChapter => {
+        nextChapter.classList.remove('next-chapter');
+    });
 }
 
 function placeNextChapter(posichapterGlobal, chapter, x, y){
@@ -143,6 +268,7 @@ function createTableau(chapters, tableauInit = []){
 
             // si le chapitre global est vide, le place à 0,0 et suivant
             if(posichapterGlobal.length == 0){
+                chapter.init = true;
                 posichapterGlobal[0] = []
                 posichapterGlobal[0][0] = chapter;
                 posichapterGlobalTemp.shift();
@@ -214,9 +340,10 @@ function createTableau(chapters, tableauInit = []){
             posichapterGlobal[i].push({});
         }
     }
-
+    posichapterGlobal.reverse();
     let posichaptersFinal = [];
     
+    //tourne le tableau de 90deg
     for (let y = 0; y < posichapterGlobal[0].length; y++) {
         let newRow = [];
         for (let x = posichapterGlobal.length - 1; x >= 0; x--) {

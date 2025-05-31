@@ -265,14 +265,24 @@ function deleteStory(idStory) {
 // crée un nouveau chapitre
 function createChapter(idStory) {
     return new Promise((resolve, reject) => {
-        db.run("INSERT INTO chapters (idStory, name) VALUES (?, ?)", [idStory, ''], function(err) {
+
+        db.all("SELECT idchapter FROM chapters WHERE idstory = ? ORDER BY idchapter ASC", [idStory], (err, rows) => {
             if (err) {
-                reject(err);
+                return reject(err);
             }
-            else {
-                resolve(this.lastID);
-            }
+            let positionChapter = rows.length+1;
+            let chapterName = 'Chapitre ' + positionChapter;
+            
+            db.run("INSERT INTO chapters (idStory, name) VALUES (?, ?)", [idStory, chapterName], function(err) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    resolve(this.lastID);
+                }
+            });
         });
+
     });
 }
 
@@ -354,7 +364,7 @@ function deleteChapter(idChapter) {
 // crée un nouveau bouton
 function createButton(value) {
     return new Promise((resolve, reject) => {
-        db.run("INSERT INTO buttons (idchapter, idstory, name) VALUES (?, ?, ?)", [value.idChapter, value.idStory, ''], function(err) {
+        db.run("INSERT INTO buttons (idchapter, idstory, name, nextchapter) VALUES (?, ?, ?, ?)", [value.idChapter, value.idStory, '', value.nextchapter], function(err) {
             if (err) {
                 reject(err);
             }

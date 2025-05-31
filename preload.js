@@ -31,7 +31,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateChapterName: (value) => ipcRenderer.invoke("update-chapter-name", value),
   updateChapterTexte: (value) => ipcRenderer.invoke("update-chapter-texte", value),
   deleteChapter: (value) => ipcRenderer.invoke("delete-chapter", value),
-  createButton: () => ipcRenderer.invoke("create-button"),
+  createButton: (value) => ipcRenderer.invoke("create-button", value),
   updateButton: (value) => ipcRenderer.invoke("update-button", value),
   updateButtonName: (value) => ipcRenderer.invoke("update-button-name", value),
   updateButtonType: (value) => ipcRenderer.invoke("update-button-type", value),

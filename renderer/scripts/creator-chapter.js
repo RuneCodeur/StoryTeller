@@ -41,7 +41,14 @@ async function updateImageChapter(){
 
 // ajout d'un bouton
 async function createButton(){
-    await API('createButton');
+    let chapters = await API('getChapters');
+    let idNextChapter = null;
+
+    if(chapters[0].idchapter){
+        idNextChapter = chapters[0].idchapter;
+    }
+    
+    await API('createButton', idNextChapter);
     chargeButtons();
     navGlobal();
 }

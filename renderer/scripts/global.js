@@ -153,6 +153,7 @@ async function showPage(page = "accueil"){
   layout = await fetch(pathHtml).then(res => res.text());
   if(layout){
     document.getElementById("content").innerHTML = layout;
+    document.getElementById("content").scrollTop = 0;
   }
 
   // suppression de tout les scripts dynamiques
