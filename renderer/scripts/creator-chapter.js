@@ -10,7 +10,10 @@ async function deleteChapter(){
 // maj du nom du chapitre
 function updateChapterName(){
     let name = document.getElementById('name-chapter').value
-    if(!name){
+    name = name.trim();
+    name = name.substring(0, 50);
+    document.getElementById('name-chapter').value = name
+    if(!name || name == ''){
         return
     }
     API('updateChapterName', name);
@@ -62,8 +65,17 @@ async function deleteButton(idButton){
 
 // maj du texte d'un bouton
 async function updateButtonName(idButton){
+
+    let name = document.getElementById('button-name-' + idButton).value
+    name = name.trim();
+    name = name.substring(0, 50);
+    document.getElementById('button-name-' + idButton).value = name
+    if(!name || name == ''){
+        return
+    }
+
     let value = {
-        name: document.getElementById('button-name-' + idButton).value,
+        name: name,
         idButton: idButton
     };
     await API('updateButtonName', value);
@@ -146,7 +158,7 @@ async function chargeButtons(){
                 break;
         }
 
-        HTMLbuttons += '<li><input type="text" onkeyup="updateButtonName(' + button.idbutton + ')" onchange="updateButtonName(' + button.idbutton + ')" class="button-name" id="button-name-' + button.idbutton + '" value="' + button.name + '">' + selectButton + buttonAction + '<button class="button-red" onclick="deleteButton(' + button.idbutton + ')">supprimer</button></li>'
+        HTMLbuttons += '<li><input type="text" onchange="updateButtonName(' + button.idbutton + ')" class="button-name" id="button-name-' + button.idbutton + '" value="' + button.name + '">' + selectButton + buttonAction + '<button class="button-red" onclick="deleteButton(' + button.idbutton + ')">supprimer</button></li>'
     });
     ensembleButons.innerHTML = HTMLbuttons;
 }

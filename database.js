@@ -364,7 +364,7 @@ function deleteChapter(idChapter) {
 // crée un nouveau bouton
 function createButton(value) {
     return new Promise((resolve, reject) => {
-        db.run("INSERT INTO buttons (idchapter, idstory, name, nextchapter) VALUES (?, ?, ?, ?)", [value.idChapter, value.idStory, '', value.nextchapter], function(err) {
+        db.run("INSERT INTO buttons (idchapter, idstory, name, nextchapter) VALUES (?, ?, ?, ?)", [value.idChapter, value.idStory, 'action', value.nextchapter], function(err) {
             if (err) {
                 reject(err);
             }

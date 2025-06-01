@@ -26,6 +26,9 @@ async function showImage(){
     if(isFile){
       screenImage.innerHTML = '<img src="' + file + '">';
     }
+    else{
+      screenImage.innerHTML = '';
+    }
   }
 
   // init
@@ -61,6 +64,7 @@ async function showAction(){
   
     if(buttons.length == 0){
       buttonsHTML = '<button class="end-story" onclick="endStory()"> Fin de l\'histoire </button>'
+      buttonsHTML += '<button class="end-story" onclick="restartStory()"> Recommencer </button>'
     }
     else{
       buttons.forEach(button => {
@@ -100,6 +104,13 @@ async function nextChapter(idButton = null){
 // fin de l'histoire, go sur l'écran de démarage
 function endStory(){
   goTo(1);
+}
+
+async function restartStory(){
+  let idStory = await API('getIdStory');
+  transition();
+  await pause(900);
+  goTo(6, idStory)
 }
 
 async function chargePage(){
