@@ -69,6 +69,9 @@
             flex-wrap: wrap;
             .button-name{
                 margin-left: 5px;
+                max-width: 45%;
+                min-width: 45%;
+                width: 45%;
             }
             .button-type, .button-redirect{
                 min-width: 60px;
@@ -87,11 +90,15 @@
                 border-radius: 5px;
                 margin: 5px;
                 padding: 5px;
+                max-width: 45%;
+                min-width: 45%;
+                width: 45%;
                 p{
                     text-align: center;
                 }
                 .button-redirect{
                     margin-top: 5px;
+                    width: 100%;
                 }
             }
         }

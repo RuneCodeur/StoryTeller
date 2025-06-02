@@ -146,12 +146,12 @@ async function chargeButtons(){
             case 0: // redirection
             default:
                 buttonAction ='<select onchange="updateButtonNextChapter(' + button.idbutton + ')" class="button-redirect" id="button-redirect-' + button.idbutton + '">'
-                for (let x = 1; x <= maxChapters; x++) {
+                for (let x = 0; x < maxChapters; x++) {
                     let isSelected = '';
-                    if(button.nextchapter == chapters[x-1].idchapter){
+                    if(button.nextchapter == chapters[x].idchapter){
                         isSelected = 'selected';
                     }
-                    buttonAction += "<option value='" + chapters[x-1].idchapter + "' " + isSelected + ">" + x + "</option>"
+                    buttonAction += "<option value='" + chapters[x].idchapter + "' " + isSelected + ">" + chapters[x].name + "</option>"
                 }
                 buttonAction += "</select>";
                 buttonAction ="<div class='ensemble-next-chapter'><p> chapitre suivant </p>" + buttonAction +"</div>";
