@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getAllStorys: () => ipcRenderer.invoke("get-all-storys"),
   createStory: (value) => ipcRenderer.invoke("create-story", value),
   updateStory: (value) => ipcRenderer.invoke("update-story", value),
+  updateModeStory: (value) => ipcRenderer.invoke("update-mode-story", value),
   updateStoryName: (value) => ipcRenderer.invoke("update-story-name", value),
   updateStoryReady: (value) => ipcRenderer.invoke("update-story-ready", value),
   deleteStory: (value) => ipcRenderer.invoke("delete-story", value),

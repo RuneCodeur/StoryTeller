@@ -402,10 +402,6 @@ const functionMap = {
     }
   },
 
-
-
-
-
   createStory: async (name) => {
     try {
       let result = await db.createStory(name);
@@ -420,6 +416,21 @@ const functionMap = {
   updateStory: async (story) => {
     try {
       let result = await db.updateStory(story);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updateModeStory: async (mode) => {
+    try {
+      let value = {
+        mode: mode,
+        idStory: idStory
+      }
+      let result = await db.updateModeStory(value);
       return result
     }
     catch (err) {
@@ -753,6 +764,11 @@ ipcMain.handle("update-story", async (event, value) => {
 ipcMain.handle("update-story-name", async (event, name) => {
   return functionMap.updateStoryName(name);
 });
+
+ipcMain.handle("update-mode-story", async (event, mode) => {
+  return functionMap.updateModeStory(mode);
+});
+
 
 ipcMain.handle("update-story-ready", async (event, ready) => {
   return functionMap.updateStoryReady(ready);

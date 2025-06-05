@@ -249,7 +249,7 @@ function getAllStorys(){
 // récupère 1 histoire
 function getStory(idStory){
     return new Promise((resolve, reject) => {
-        db.all("SELECT idstory, name, ready FROM storys WHERE idstory = ?", [idStory], (err, rows) => {
+        db.all("SELECT idstory, name, ready, rpgmode FROM storys WHERE idstory = ?", [idStory], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -361,6 +361,19 @@ function updateStory(value) {
 function updateStoryName(value) {
     return new Promise((resolve, reject) => {
         db.run("UPDATE storys SET name = ? where idstory = ?", [value.name, value.idStory], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateModeStory(value){
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE storys SET rpgmode = ? where idstory = ?", [value.mode, value.idStory], function(err) {
             if (err) {
                 reject(err);
             }
@@ -592,6 +605,7 @@ module.exports = {
     getButtons,
     createStory,
     updateStory,
+    updateModeStory,
     updateStoryName,
     updateStoryReady,
     deleteStory,

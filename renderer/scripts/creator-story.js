@@ -16,6 +16,15 @@ async function exportStory(){
     await API('exportStory');
 }
 
+async function updateModeStory(){
+    let mode = document.getElementById('button-mode').value
+    if(!mode){
+        return
+    }
+    await API('updateModeStory', mode);
+    navGlobal();
+}
+
 // maj du nom de la story
 async function updateStoryName(){
     let name = document.getElementById('name-story').value
@@ -50,7 +59,6 @@ async function chargeChapters(){
 
     let posichapters = createTableau(chapters);
 
-    consoleLog('eeeeeee')
     // affichage des chapitres
     HTMLchapters += '<tbody>';
     posichapters[0].forEach(lignChapters =>{
@@ -373,6 +381,7 @@ async function chargePage(){
     
     document.getElementById('name-story').value = story.name;
     let buttonIsReady = document.getElementById('button-is-ready');
+    let buttonMode = document.getElementById('button-mode');
 
     buttonIsReady.classList.remove("red");
     buttonIsReady.classList.remove("green");
@@ -387,6 +396,20 @@ async function chargePage(){
     buttonIsReady.innerText = textIsReady;
     buttonIsReady.dataset.ready = story.ready;
 
+    let htmlMode = ''
+    let modeList = [
+        'Mode Classique',
+        'Mode RPG'
+    ]
+
+    for (let x = 0; x < modeList.length; x++) {
+        let isSelected = '';
+        if(story.rpgmode && story.rpgmode == x){
+            isSelected = 'selected';
+        }
+        htmlMode += "<option value='" + x + "' " + isSelected + ">" + modeList[x] + "</option>"
+    }
+    buttonMode.innerHTML = htmlMode;
     chargeChapters();
 }
   
