@@ -14,7 +14,8 @@ function initializeDatabase() {
             `CREATE TABLE IF NOT EXISTS storys (
                 idstory INTEGER PRIMARY KEY AUTOINCREMENT,
                 name VARCHAR(255) NOT NULL,
-                ready INTEGER DEFAULT 0
+                ready INTEGER DEFAULT 0,
+                rpgmode INTEGER DEFAULT 0
             )`
         );
 
@@ -38,12 +39,36 @@ function initializeDatabase() {
                 idstory INTEGER,
                 idchapter INTEGER,
                 nextchapter INTEGER,
+                giveobject INTEGER,
+                requireobject INTEGER,
+                useobject INTEGER,
                 FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE,
                 FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
                 FOREIGN KEY(nextchapter) REFERENCES chapters(idchapter) ON DELETE SET NULL
             )`
         );
 
+        db.run(
+            `CREATE TABLE IF NOT EXISTS objects (
+                idobject INTEGER PRIMARY KEY AUTOINCREMENT,
+                name VARCHAR(255) NOT NULL,
+                description TEXT,
+                visible INTEGER DEFAULT 1,
+                idstory INTEGER,
+                FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE
+            )`
+        );
+
+        db.run(
+            `CREATE TABLE IF NOT EXISTS chaptertexteffects (
+                idchapter INTEGER,
+                idobject INTEGER,
+                texte TEXT,
+                positive INTEGER DEFAULT 1, -- 1 = si objet est possédé, 0 = si objet n’est PAS possédé
+                FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
+                FOREIGN KEY(idobject) REFERENCES objects(idobject) ON DELETE CASCADE
+            )`
+        );
     });
 }
 

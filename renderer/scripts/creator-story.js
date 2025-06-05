@@ -50,13 +50,15 @@ async function chargeChapters(){
 
     let posichapters = createTableau(chapters);
 
+    consoleLog('eeeeeee')
     // affichage des chapitres
     HTMLchapters += '<tbody>';
     posichapters[0].forEach(lignChapters =>{
         HTMLchapters += '<tr>';
         lignChapters.forEach(chapter =>{
             HTMLchapters += '<td>';
-            if(chapter.idchapter){
+
+            if( chapter && chapter.idchapter){
                 let classList = "creator-chapter ";
                 if(chapter.init){
                     classList += "init-chapter ";
@@ -71,6 +73,7 @@ async function chargeChapters(){
     HTMLchapters += '</tbody>';
 
     chaptersGlobal.innerHTML = HTMLchapters;
+
 
     // affichage des chapitres orphelins
     HTMLchapters = '';
@@ -108,11 +111,14 @@ function chaptersLines(posiChapters) {
     let chapters = [];
   
     posiChapters.forEach(lignChapters => {
-      lignChapters.forEach(chapter => {
-        if (chapter.idchapter) {
-          chapters.push(chapter);
+        if(lignChapters){
+
+            lignChapters.forEach(chapter => {
+                if (chapter && chapter.idchapter) {
+                chapters.push(chapter);
+                }
+            });
         }
-      });
     });
   
     chapters.forEach(chap => {
@@ -196,12 +202,18 @@ function placeNextChapter(posichapterGlobal, chapter, x, y){
             return posichapterGlobal;
         }
     
+        // si la place à attribuer est déja prise -> deplace vers le bas
         if(posichapterGlobal[x][y] && posichapterGlobal[x][y].idchapter){
 
-            for (let i = x+1; i <= posichapterGlobal[x].length; i++) {
+            for (let ix = x+1; ix <= posichapterGlobal[x].length; ix++) {
                 
-                if(posichapterGlobal[i] && !posichapterGlobal[i][y] ){
-                    posichapterGlobal[i][y] = chapter;
+                for (let iy = 0; iy < y+1; iy++) {
+                    if(posichapterGlobal[ix] && !posichapterGlobal[ix][iy]){
+                        posichapterGlobal[ix][iy] = {};
+                    }  
+                }
+                if(posichapterGlobal[ix] && !posichapterGlobal[ix][y] ){
+                    posichapterGlobal[ix][y] = chapter;
                     return posichapterGlobal;
                 }
             }
@@ -231,17 +243,17 @@ function findChapter(posichapterGlobal, chapter){
         if(posichapterGlobal[x]){
             for (let y = 0; y < posichapterGlobal[x].length; y++) {
                 // si le chapitre existe déja, return
-                if(posichapterGlobal[x][y] && posichapterGlobal[x][y].idchapter == chapter.idchapter){
+                if(posichapterGlobal[x][y] && posichapterGlobal[x][y] != undefined && posichapterGlobal[x][y].idchapter == chapter.idchapter){
                     return posichapterGlobal;
                 }
 
-                // si le chapitre est référencé pour après, le place
-                if(posichapterGlobal[x][y].nextchapters){
+                // si le chapitre est référencé pour après, le place 
+                if(posichapterGlobal[x][y].nextchapters && posichapterGlobal[x][y].nextchapters != null){  
                     let nextChapters = posichapterGlobal[x][y].nextchapters.split(',').map(Number);
                     for (let idN = 0; idN <= nextChapters.length; idN++) {
 
                         if(nextChapters[idN] == chapter.idchapter){
-                            posichapterGlobal = placeNextChapter(posichapterGlobal, chapter, x, y);
+                            posichapterGlobal = placeNextChapter(posichapterGlobal, chapter, x, y);      
                             return posichapterGlobal;
                         }
                     }
@@ -250,6 +262,7 @@ function findChapter(posichapterGlobal, chapter){
             }
         }
     }
+    
     return null;
 }
 

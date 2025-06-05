@@ -1,0 +1,10 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 5000,
+            "driver": "SQLite",
+            "database": "C:\\Users\\DELL\\AppData\\Roaming\\storyteller\\story.db",
+            "name": "storyteller"
+        }
+    ]
+}
