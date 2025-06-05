@@ -5,13 +5,14 @@ const path = require('path');
 const db = require("./database");
 const server = require('./server');
 const QRCode = require('qrcode');
-const VERSION = "1.3.3";
+const VERSION = "1.3.4";
 const id = powerSaveBlocker.start('prevent-display-sleep');
 
 const configDefault = { 
   fullscreen: false,
   volume: 7,
   wifiName:'Mon Wifi',
+  version: VERSION 
 }
 
 let currentPage = 0;
@@ -26,6 +27,7 @@ let modScreen = 1;
 const imageFolder = path.join(app.getPath("userData"), "images");
 const audioFolder = path.join(app.getPath("userData"), "audio");
 const configPath = path.join(app.getPath("userData"), "config.json");
+const bddPath = path.join(app.getPath("userData", "storyteller.db"));
 
 const functionMap = {
 
@@ -1016,6 +1018,13 @@ function createServer(){
 }
 
 app.whenReady().then(() =>{
+  if(!config || !config.version || config.version != configDefault.version ){
+
+    db.MAJDATAbase();
+    config.version = configDefault.version;
+    saveConfig(config)
+  }
+
   db.initializeDatabase();
   createWindowMain();
 });

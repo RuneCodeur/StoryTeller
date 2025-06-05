@@ -2,74 +2,184 @@ const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 const { app } = require("electron");
 
-const dbPath = path.join(app.getPath("userData"), "storys.db");
+const dbPath = path.join(app.getPath("userData"), "storyteller.db");
 const db = new sqlite3.Database(dbPath);
 
 function initializeDatabase() {
-    db.serialize(() => {
-        
-        db.run("PRAGMA foreign_keys = ON");
-        
-        db.run(
-            `CREATE TABLE IF NOT EXISTS storys (
-                idstory INTEGER PRIMARY KEY AUTOINCREMENT,
-                name VARCHAR(255) NOT NULL,
-                ready INTEGER DEFAULT 0,
-                rpgmode INTEGER DEFAULT 0
-            )`
-        );
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            
+            db.run("PRAGMA foreign_keys = ON");
+            
+            db.run(
+                `CREATE TABLE IF NOT EXISTS storys (
+                    idstory INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name VARCHAR(255) NOT NULL,
+                    ready INTEGER DEFAULT 0,
+                    rpgmode INTEGER DEFAULT 0
+                )`
+            );
 
-        db.run(
-            `CREATE TABLE IF NOT EXISTS chapters (
-                idchapter INTEGER PRIMARY KEY AUTOINCREMENT,
-                name VARCHAR(255) NOT NULL,
-                texte TEXT,
-                imagelink VARCHAR(255),
-                idstory INTEGER,
-                FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE
-            )`
-        );
+            db.run(
+                `CREATE TABLE IF NOT EXISTS chapters (
+                    idchapter INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name VARCHAR(255) NOT NULL,
+                    texte TEXT,
+                    imagelink VARCHAR(255),
+                    idstory INTEGER,
+                    FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE
+                )`
+            );
 
-        db.run(
-            `CREATE TABLE IF NOT EXISTS buttons (
-                idbutton INTEGER PRIMARY KEY AUTOINCREMENT,
-                name VARCHAR(255) NOT NULL,
-                type TINYINT,
-                filelink VARCHAR(255),
-                idstory INTEGER,
-                idchapter INTEGER,
-                nextchapter INTEGER,
-                giveobject INTEGER,
-                requireobject INTEGER,
-                useobject INTEGER,
-                FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE,
-                FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
-                FOREIGN KEY(nextchapter) REFERENCES chapters(idchapter) ON DELETE SET NULL
-            )`
-        );
+            db.run(
+                `CREATE TABLE IF NOT EXISTS buttons (
+                    idbutton INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name VARCHAR(255) NOT NULL,
+                    type TINYINT,
+                    filelink VARCHAR(255),
+                    idstory INTEGER,
+                    idchapter INTEGER,
+                    nextchapter INTEGER,
+                    giveobject INTEGER,
+                    requireobject INTEGER,
+                    useobject INTEGER,
+                    FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE,
+                    FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
+                    FOREIGN KEY(nextchapter) REFERENCES chapters(idchapter) ON DELETE SET NULL
+                )`
+            );
 
-        db.run(
-            `CREATE TABLE IF NOT EXISTS objects (
-                idobject INTEGER PRIMARY KEY AUTOINCREMENT,
-                name VARCHAR(255) NOT NULL,
-                description TEXT,
-                visible INTEGER DEFAULT 1,
-                idstory INTEGER,
-                FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE
-            )`
-        );
+            db.run(
+                `CREATE TABLE IF NOT EXISTS objects (
+                    idobject INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name VARCHAR(255) NOT NULL,
+                    description TEXT,
+                    visible INTEGER DEFAULT 1,
+                    idstory INTEGER,
+                    FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE
+                )`
+            );
 
-        db.run(
-            `CREATE TABLE IF NOT EXISTS chaptertexteffects (
-                idchapter INTEGER,
-                idobject INTEGER,
-                texte TEXT,
-                positive INTEGER DEFAULT 1, -- 1 = si objet est possédé, 0 = si objet n’est PAS possédé
-                FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
-                FOREIGN KEY(idobject) REFERENCES objects(idobject) ON DELETE CASCADE
-            )`
-        );
+            db.run(
+                `CREATE TABLE IF NOT EXISTS chaptertexteffects (
+                    idchapter INTEGER,
+                    idobject INTEGER,
+                    texte TEXT,
+                    positive INTEGER DEFAULT 1, -- 1 = si objet est possédé, 0 = si objet n’est PAS possédé
+                    FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
+                    FOREIGN KEY(idobject) REFERENCES objects(idobject) ON DELETE CASCADE
+                )`
+            );
+        });
+        resolve();
     });
+}
+
+function MAJDATAgetTables(){
+    return new Promise((resolve, reject) => {
+        db.all("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'", (err, tables) => {
+            if (err) {
+                reject(err);
+            }
+            else{
+                resolve(tables);
+            }
+        });
+    });
+}
+
+function MAJDATAdeleteTable(table){
+    return new Promise((resolve, reject) => {
+        db.run(`DELETE FROM sqlite_sequence WHERE name=?`, [table], function (err1) {
+            if (err1) {
+                return reject(err1)
+            };
+          
+            db.run(`DROP TABLE IF EXISTS ${table}`, function (err2) {
+                if (err2) {
+                    return reject(err2)
+                };
+                resolve();
+            });
+        });
+    });
+}
+
+function MAJDATAgetAllRows(table){
+    return new Promise((resolve, reject) => {
+        let safeTableName = table.replace(/[^a-zA-Z0-9_]/g, '');
+        let sql = `SELECT * FROM ${safeTableName};`;
+
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
+
+function MAJDATAinsertAllRows(table, rows) {
+    return new Promise((resolve, reject) => {
+        if (!rows || rows.length === 0) {
+            return resolve();
+        }
+    
+        db.serialize(() => {
+            db.run('PRAGMA foreign_keys = OFF;');
+    
+            let columns = Object.keys(rows[0]);
+            let placeholders = columns.map(() => '?').join(', ');
+            let sql = `INSERT INTO ${table} (${columns.join(', ')}) VALUES (${placeholders})`;
+    
+            let request = db.prepare(sql);
+    
+            for (let row of rows) {
+                let values = columns.map(col => row[col]);
+                request.run(values);
+            }
+    
+            request.finalize(err => {
+                if (err){ 
+                    return reject(err);
+                }
+                resolve();
+            });
+        });
+    });
+}
+
+// mis à jour de la BDD aux dernières règles de création
+async function MAJDATAbase() {
+    let tables = await MAJDATAgetTables();
+    let bdd = [];
+    try {
+        db.run("PRAGMA foreign_keys = OFF");
+        
+        for (let table of tables) {
+            let rows = await MAJDATAgetAllRows(table.name);
+            bdd.push({ 
+                name: table.name, 
+                rows: rows 
+            });
+        }
+    
+        for (let table of tables) {
+            await MAJDATAdeleteTable(table.name);
+        }
+        
+        await initializeDatabase();
+        
+        for (let table of bdd) {
+            await MAJDATAinsertAllRows(table.name, table.rows);
+        }
+    } catch (error) {
+        console.log(error)
+    }
+    
+    db.run("PRAGMA foreign_keys = ON");
 }
 
 // récupère l'image de 1 chapitre
@@ -469,6 +579,7 @@ function deleteButton(idButton) {
 
 module.exports = {
     initializeDatabase,
+    MAJDATAbase,
     getImageChapter,
     updateImageChapter,
     deleteImageChapter,
