@@ -31,6 +31,85 @@
             color: $colorValid;
         }
     }
+    #rpg-mode{
+        width: 100%;
+        margin-bottom: 25px;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .ensemble-stat{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            border: 2px black solid;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            padding: 5px;
+            width: 200px;
+            p{
+                text-align: center;
+            }
+            input{
+                padding: 2px;
+                text-align:end;
+                width: 50px;
+            }
+        }
+        ul{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-bottom: 25px;
+            li{
+                width: 100%;
+                margin: 5px;
+                border: 3px black solid;
+                background-color: rgba(0, 0, 0, 0.10);
+                border-radius: 5px;
+                display: flex;
+                justify-content:space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                .button-name{
+                    margin-left: 5px;
+                    max-width: 45%;
+                    min-width: 45%;
+                    width: 45%;
+                }
+                .button-type, .button-redirect{
+                    min-width: 60px;
+                }
+                .button-type {
+                    height: 30px;
+                }
+
+                .ensemble-next-chapter{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-direction: column;
+                    flex-wrap: wrap;
+                    border: 2px black solid;
+                    border-radius: 5px;
+                    margin: 5px;
+                    padding: 5px;
+                    max-width: 45%;
+                    min-width: 45%;
+                    width: 45%;
+                    p{
+                        text-align: center;
+                    }
+                    .button-redirect{
+                        margin-top: 5px;
+                        width: 100%;
+                    }
+                }
+            }
+        }
+    }
     .table-chapters{
         display: flex;
         justify-content: flex-start;

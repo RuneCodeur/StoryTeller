@@ -16,7 +16,8 @@ function initializeDatabase() {
                     idstory INTEGER PRIMARY KEY AUTOINCREMENT,
                     name VARCHAR(255) NOT NULL,
                     ready INTEGER DEFAULT 0,
-                    rpgmode INTEGER DEFAULT 0
+                    rpgmode INTEGER DEFAULT 0,
+                    life INTEGER DEFAULT 1
                 )`
             );
 
@@ -54,7 +55,7 @@ function initializeDatabase() {
                     idobject INTEGER PRIMARY KEY AUTOINCREMENT,
                     name VARCHAR(255) NOT NULL,
                     description TEXT,
-                    visible INTEGER DEFAULT 1,
+                    type INTEGER DEFAULT 1,
                     idstory INTEGER,
                     FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE
                 )`
@@ -249,7 +250,7 @@ function getAllStorys(){
 // récupère 1 histoire
 function getStory(idStory){
     return new Promise((resolve, reject) => {
-        db.all("SELECT idstory, name, ready, rpgmode FROM storys WHERE idstory = ?", [idStory], (err, rows) => {
+        db.all("SELECT idstory, name, ready, rpgmode, life FROM storys WHERE idstory = ?", [idStory], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -327,6 +328,18 @@ function getButtons(idChapter){
     });
 }
 
+function getObjects(idStory){
+    return new Promise((resolve, reject) => {
+        db.all("SELECT idobject, name, description, type FROM objects WHERE idstory = ?", [idStory], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
 // crée une nouvelle histoire + crée un chapitre 
 function createStory(name) {
     return new Promise((resolve, reject) => {
@@ -384,6 +397,19 @@ function updateModeStory(value){
     });
 }
 
+function updateLifeStory(value){
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE storys SET life = ? where idstory = ?", [value.life, value.idStory], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
 // met à jour l'etat ready de 1 histoire
 function updateStoryReady(value) {
     return new Promise((resolve, reject) => {
@@ -409,6 +435,28 @@ function deleteStory(idStory) {
     });
 }
 
+function deleteObject(idObject) {
+    return new Promise((resolve, reject) => {
+        db.run("DELETE FROM objects WHERE idobject = ?", [idObject], function(err) {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
+}
+
+// crée un nouvel objet associé au chapitre
+function createObject(idStory) {
+return new Promise((resolve, reject) => {
+        db.run("INSERT INTO objects (idstory, name, description) VALUES (?, ?, ?)", [idStory, 'objet', ''], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
 
 // crée un nouveau chapitre
 function createChapter(idStory) {
@@ -438,6 +486,48 @@ function createChapter(idStory) {
 function updateChapter(value) {
     return new Promise((resolve, reject) => {
         db.run("UPDATE chapters SET name = ?, texte = ? where idchapter = ?", [value.name, value.texte, value.idChapter], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateObjectDescription(value) {
+    return new Promise((resolve, reject) => {
+        
+        db.run("UPDATE objects SET description = ? where idobject = ?", [value.description, value.idObject], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateObjectType(value) {
+    return new Promise((resolve, reject) => {
+        
+        db.run("UPDATE objects SET type = ? where idobject = ?", [value.type, value.idObject], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateObjectName(value) {
+    return new Promise((resolve, reject) => {
+        
+        db.run("UPDATE objects SET name = ? where idobject = ?", [value.name, value.idObject], function(err) {
             if (err) {
                 reject(err);
             }
@@ -603,14 +693,21 @@ module.exports = {
     getAllChapters,
     getChapter,
     getButtons,
+    getObjects,
+    createObject,
     createStory,
     updateStory,
     updateModeStory,
+    updateLifeStory,
     updateStoryName,
     updateStoryReady,
     deleteStory,
+    deleteObject,
     createChapter,
     updateChapter,
+    updateObjectName,
+    updateObjectDescription,
+    updateObjectType,
     updateChapterName,
     updateChapterTexte,
     deleteChapter,

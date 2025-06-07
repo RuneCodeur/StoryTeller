@@ -522,6 +522,84 @@ ul {
   border: 3px rgb(16, 173, 16) solid;
   color: rgb(16, 173, 16);
 }
+#creator-story #rpg-mode {
+  width: 100%;
+  margin-bottom: 25px;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#creator-story #rpg-mode .ensemble-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  border: 2px black solid;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 5px;
+  width: 200px;
+}
+#creator-story #rpg-mode .ensemble-stat p {
+  text-align: center;
+}
+#creator-story #rpg-mode .ensemble-stat input {
+  padding: 2px;
+  text-align: end;
+  width: 50px;
+}
+#creator-story #rpg-mode ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 25px;
+}
+#creator-story #rpg-mode ul li {
+  width: 100%;
+  margin: 5px;
+  border: 3px black solid;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+#creator-story #rpg-mode ul li .button-name {
+  margin-left: 5px;
+  max-width: 45%;
+  min-width: 45%;
+  width: 45%;
+}
+#creator-story #rpg-mode ul li .button-type, #creator-story #rpg-mode ul li .button-redirect {
+  min-width: 60px;
+}
+#creator-story #rpg-mode ul li .button-type {
+  height: 30px;
+}
+#creator-story #rpg-mode ul li .ensemble-next-chapter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  border: 2px black solid;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 5px;
+  max-width: 45%;
+  min-width: 45%;
+  width: 45%;
+}
+#creator-story #rpg-mode ul li .ensemble-next-chapter p {
+  text-align: center;
+}
+#creator-story #rpg-mode ul li .ensemble-next-chapter .button-redirect {
+  margin-top: 5px;
+  width: 100%;
+}
 #creator-story .table-chapters {
   display: flex;
   justify-content: flex-start;

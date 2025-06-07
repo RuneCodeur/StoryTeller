@@ -12,16 +12,117 @@ async function addChapter(){
     navGlobal();
 }
 
+// ajoute un objet utilisable
+async function addObject(){
+    await API('createObject');
+    chargeObjects();
+    navGlobal();
+}
+
+async function chargeObjects(){
+    let objects = await API('getObjects');
+    
+    let ensembleObjects = document.getElementById('ensemble-objects');
+    let htmlObjects = ''
+    let listType = ['invisible', 'visible']
+
+    objects.forEach(object => {
+        htmlObjects += '<li>'
+        htmlObjects += '<input type="text" id="name-object-' + object.idobject + '" onchange="updateObjectName(' + object.idobject + ')" value="' + object.name + '">'
+        htmlObjects += '<textarea id="description-object-' + object.idobject + '" onchange="updateObjectDescription(' + object.idobject + ')">' + object.description + '</textarea>'
+        
+        htmlObjects +='<select onchange="updateObjectType(' + object.idobject + ')" id="type-object-' + object.idobject + '">'
+        
+        for (let x = 0; x < listType.length; x++) {
+            let isSelected = '';
+            if(object.type == x){
+                isSelected = 'selected';
+            }
+            htmlObjects += "<option value='" + x + "' " + isSelected + ">" + listType[x] + "</option>"
+        }
+        htmlObjects += "</select>";
+        
+        htmlObjects += '<button class="button-red" onclick="deleteObject(' + object.idobject + ')">Supprimer</button>'
+        htmlObjects += '</li>'
+    });
+    ensembleObjects.innerHTML = htmlObjects
+}
+
 async function exportStory(){
     await API('exportStory');
 }
 
 async function updateModeStory(){
-    let mode = document.getElementById('button-mode').value
+    let mode = document.getElementById('button-mode').value;
+    let paramRPGmode = document.getElementById('rpg-mode');
     if(!mode){
         return
     }
     await API('updateModeStory', mode);
+
+    if(mode == 1){
+        paramRPGmode.style.display="flex";
+    }else{
+        
+        paramRPGmode.style.display="none";
+    }
+    navGlobal();
+}
+
+async function updateObjectName(idObject){
+    let name = document.getElementById('name-object-' + idObject).value;
+    name = name.trim();
+    name = name.substring(0, 50);
+
+    document.getElementById('name-object-' + idObject).value = name
+    
+    if(!name || name == ''){
+        return
+    }
+
+    let value = {
+        name: name,
+        idObject: idObject
+    };
+    await API('updateObjectName', value);
+    navGlobal();
+}
+
+async function updateObjectDescription(idObject){
+    let description = document.getElementById('description-object-' + idObject).value;
+    
+    let value = {
+        description: description,
+        idObject: idObject
+    };
+    API('updateObjectDescription', value);
+    navGlobal();
+}
+
+async function updateObjectType(idObject){
+    let type = document.getElementById('type-object-' + idObject).value;
+
+    let value = {
+        type: type,
+        idObject: idObject
+    };
+    await API('updateObjectType', value);
+    navGlobal();
+}
+
+async function updateLifeStory(){
+    let life = document.getElementById('life-value').value;
+    if(!life){
+        return
+    }
+    await API('updateLifeStory', life);
+
+    navGlobal();
+}
+
+async function deleteObject(idObject){
+    await API('deleteObject', idObject);
+    chargeObjects();
     navGlobal();
 }
 
@@ -382,6 +483,8 @@ async function chargePage(){
     document.getElementById('name-story').value = story.name;
     let buttonIsReady = document.getElementById('button-is-ready');
     let buttonMode = document.getElementById('button-mode');
+    let paramRPGmode = document.getElementById('rpg-mode');
+    let buttonLife = document.getElementById('life-value');
 
     buttonIsReady.classList.remove("red");
     buttonIsReady.classList.remove("green");
@@ -410,7 +513,17 @@ async function chargePage(){
         htmlMode += "<option value='" + x + "' " + isSelected + ">" + modeList[x] + "</option>"
     }
     buttonMode.innerHTML = htmlMode;
+
+    if(story.rpgmode && story.rpgmode == 1){
+        paramRPGmode.style.display="flex";
+    }
+
+    if(story.life){
+    buttonLife.value = story.life
+    }
+
     chargeChapters();
+    chargeObjects();
 }
   
 chargePage();

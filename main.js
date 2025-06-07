@@ -439,6 +439,21 @@ const functionMap = {
     }
   },
 
+  updateLifeStory: async (life) => {
+    try {
+      let value = {
+        life: life,
+        idStory: idStory
+      }
+      let result = await db.updateLifeStory(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
   updateStoryName: async (name) => {
     try {
       let value = {
@@ -489,6 +504,28 @@ const functionMap = {
     }
   },
 
+  deleteObject: async (value) => {
+    try {
+      let result = await db.deleteObject(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  createObject: async () => {
+    try {
+      let result = await db.createObject(idStory);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
   createChapter: async () => {
     try {
       let result = await db.createChapter(idStory);
@@ -503,6 +540,39 @@ const functionMap = {
   updateChapter: async (value) => {
     try {
       let result = await db.updateChapter(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updateObjectDescription: async (value) => {
+    try {
+      let result = await db.updateObjectDescription(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updateObjectType: async (value) => {
+    try {
+      let result = await db.updateObjectType(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updateObjectName: async (value) => {
+    try {
+      let result = await db.updateObjectName(value);
       return result
     }
     catch (err) {
@@ -675,6 +745,11 @@ const functionMap = {
     return info;
   },
 
+  getObjects: async () => {
+    let info = await db.getObjects(idStory);
+    return info;
+  },
+
   quitApp: async () => {
     let allWindows = BrowserWindow.getAllWindows();
     for (let win of allWindows) {
@@ -765,10 +840,13 @@ ipcMain.handle("update-story-name", async (event, name) => {
   return functionMap.updateStoryName(name);
 });
 
+ipcMain.handle("update-life-story", async (event, life) => {
+  return functionMap.updateLifeStory(life);
+});
+
 ipcMain.handle("update-mode-story", async (event, mode) => {
   return functionMap.updateModeStory(mode);
 });
-
 
 ipcMain.handle("update-story-ready", async (event, ready) => {
   return functionMap.updateStoryReady(ready);
@@ -778,12 +856,32 @@ ipcMain.handle("delete-story", async (event, value) => {
   return functionMap.deleteStory(value);
 });
 
+ipcMain.handle("delete-object", async (event, value) => {
+  return functionMap.deleteObject(value);
+});
+
+ipcMain.handle("create-object", async () => {
+  return functionMap.createObject();
+});
+
 ipcMain.handle("create-chapter", async () => {
   return functionMap.createChapter();
 });
 
 ipcMain.handle("update-chapter", async (event, value) => {
   return functionMap.updateChapter(value);
+});
+
+ipcMain.handle("update-object-description", async (event, value) => {
+  return functionMap.updateObjectDescription(value);
+});
+
+ipcMain.handle("update-object-type", async (event, value) => {
+  return functionMap.updateObjectType(value);
+});
+
+ipcMain.handle("update-object-name", async (event, value) => {
+  return functionMap.updateObjectName(value);
 });
 
 ipcMain.handle("update-chapter-name", async (event, name) => {
@@ -868,6 +966,10 @@ ipcMain.handle("get-chapter", async () => {
 
 ipcMain.handle("get-buttons", async () => {
   return functionMap.getButtons();
+});
+
+ipcMain.handle("get-objects", async () => {
+  return functionMap.getObjects();
 });
 
 ipcMain.handle("get-mode-screen", () => {

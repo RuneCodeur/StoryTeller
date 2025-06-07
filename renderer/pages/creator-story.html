@@ -5,11 +5,21 @@
     <div class="actions">
         <button class="button-hover" onclick="updateIsReady()" id="button-is-ready"> - </button>
         <select onchange="updateModeStory()" id="button-mode"></select>
-        <button class="button-hover" onclick="addChapter()">Ajouter un chapitre</button>
         <button class="button-hover" onclick="exportStory()" > Exporter </button>
+    </div>
+
+    <div id="rpg-mode">
+        <div class="ensemble-stat"><p>Points de vie </p> <input type="number" onchange="updateLifeStory()" id="life-value" min="1" max="100" placeholder="3"></div>
+        <h2>Objets</h2>
+        
+        <button class="button-hover" onclick="addObject()" > Ajouter un objet </button>
+        <ul id="ensemble-objects"></ul>
+
     </div>
     
     <h2>Chapitres</h2>
+    
+    <button class="button-hover" onclick="addChapter()">Ajouter un chapitre</button>
     <div class="table-chapters">
         <div class="chapterPrincipal">
             <svg id="chapterPaths" class="svg-paths"></svg>
