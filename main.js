@@ -251,7 +251,16 @@ const functionMap = {
         const jsonContent = await storyFile.async('string');
         storyData = JSON.parse(jsonContent);
 
-        let idStoryImport = await functionMap.createStory(storyData.title);
+        let value = {
+          name: storyData.title,
+          rpgmode : 0,
+        }
+
+        if(storyData.type){
+          value.rpgmode = storyData.type
+        }
+
+        let idStoryImport = await functionMap.createStory(value);
         idStory = idStoryImport;
         
         // insertion des chapitres
@@ -402,9 +411,9 @@ const functionMap = {
     }
   },
 
-  createStory: async (name) => {
+  createStory: async (value) => {
     try {
-      let result = await db.createStory(name);
+      let result = await db.createStory(value);
       return result
     }
     catch (err) {

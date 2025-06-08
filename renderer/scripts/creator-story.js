@@ -482,7 +482,6 @@ async function chargePage(){
     
     document.getElementById('name-story').value = story.name;
     let buttonIsReady = document.getElementById('button-is-ready');
-    let buttonMode = document.getElementById('button-mode');
     let paramRPGmode = document.getElementById('rpg-mode');
     let buttonLife = document.getElementById('life-value');
 
@@ -499,27 +498,12 @@ async function chargePage(){
     buttonIsReady.innerText = textIsReady;
     buttonIsReady.dataset.ready = story.ready;
 
-    let htmlMode = ''
-    let modeList = [
-        'Mode Classique',
-        'Mode RPG'
-    ]
-
-    for (let x = 0; x < modeList.length; x++) {
-        let isSelected = '';
-        if(story.rpgmode && story.rpgmode == x){
-            isSelected = 'selected';
-        }
-        htmlMode += "<option value='" + x + "' " + isSelected + ">" + modeList[x] + "</option>"
-    }
-    buttonMode.innerHTML = htmlMode;
-
     if(story.rpgmode && story.rpgmode == 1){
         paramRPGmode.style.display="flex";
     }
 
     if(story.life){
-    buttonLife.value = story.life
+        buttonLife.value = story.life
     }
 
     chargeChapters();

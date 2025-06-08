@@ -341,9 +341,9 @@ function getObjects(idStory){
 }
 
 // crée une nouvelle histoire + crée un chapitre 
-function createStory(name) {
+function createStory(value) {
     return new Promise((resolve, reject) => {
-        db.run("INSERT INTO storys (name, ready) VALUES (?, ?)", [name, 0], function(err) {
+        db.run("INSERT INTO storys (name, rpgmode, ready) VALUES (?, ?, ?)", [value.name, value.rpgmode, 0], function(err) {
             if (err) {
                 reject(err);
             }
