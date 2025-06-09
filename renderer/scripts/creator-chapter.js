@@ -105,22 +105,31 @@ async function updateButtonNextChapter(idButton){
 }
 
 // charge les boutons
-async function chargeButtons(){
+async function chargeButtons(type = 0){
     let buttons = await API('getButtons');
     let chapters = await API('getChapters');
+    let story = await API('getStory');
+    let objects = await API('getObjects');
 
     let HTMLbuttons = '';
     let ensembleButons = document.getElementById('ensemble-butons');
-    let typeChoice = ['redirection'];
+    let typeChoice = ['redirection', 'gain objet', 'perte objet', 'echange d\'objet', 'objet requis', 'perte de vie'];
     let maxChapters = chapters.length;
+    let rpgMode = 0;
+
+    if(story.rpgmode && story.rpgmode == 1){
+        rpgMode = 1
+    }
 
     buttons.forEach(button => {
 
         let selectButton = ''
         let buttonAction = '';
+        let buttonRedirection = '';
+        let redirection = false;
 
         // mode multi-type de bouton
-        if(typeChoice.length > 1){
+        if(rpgMode != 0){
 
             selectButton = '<select onchange="updateButtonType(' + button.idbutton + ')" class="button-type" id="button-type-' + button.idbutton + '">'
 
@@ -139,28 +148,75 @@ async function chargeButtons(){
         }
 
         switch (button.type) {
-            case 1: // audio
-            buttonAction = '<button>audio</button> <button>changer</button>'
+
+            case 6: // audio
+            buttonAction += '<button>audio</button> <button>changer</button>'
             break;
 
-            case 0: // redirection
+            case 5: // perte de vie
+            buttonAction += '<div class="ensemble-button-action"><p>Perte de vie</p> <input type="number" onchange="updateLostLife(' + button.idbutton + ')" id="button-lostlife-' + button.idbutton + '" class="button-lostlife" min="1" max="100" value="' + button.lostlife+ '"></div>'
+            redirection = true;
+            break;
+
+            case 4: // objet requis
+            buttonAction += buttonObject('objet requis', button.type, 1, button.idbutton, objects, button.requireobject)
+            redirection = true;
+            break;
+            
+            case 3: // echange
+            buttonAction += buttonObject('objet à donner', button.type, 1, button.idbutton, objects, button.requireobject)
+            buttonAction += buttonObject('gain', button.type, 2, button.idbutton, objects, button.giveobject)
+            redirection = true;
+            break;
+
+            case 2: // perte objet
+            buttonAction += buttonObject('objet requis (perdu)', button.type, 1, button.idbutton, objects, button.requireobject)
+            redirection = true;
+            break;
+
+            case 1: // gain objet
+            buttonAction += buttonObject('gain', button.type, 2, button.idbutton, objects, button.giveobject)
+            redirection = true;
+            break;
+
+            case 0: // simple redirection
             default:
-                buttonAction ='<select onchange="updateButtonNextChapter(' + button.idbutton + ')" class="button-redirect" id="button-redirect-' + button.idbutton + '">'
-                for (let x = 0; x < maxChapters; x++) {
-                    let isSelected = '';
-                    if(button.nextchapter == chapters[x].idchapter){
-                        isSelected = 'selected';
-                    }
-                    buttonAction += "<option value='" + chapters[x].idchapter + "' " + isSelected + ">" + chapters[x].name + "</option>"
-                }
-                buttonAction += "</select>";
-                buttonAction ="<div class='ensemble-next-chapter'><p> chapitre suivant </p>" + buttonAction +"</div>";
+                redirection = true;
                 break;
         }
 
-        HTMLbuttons += '<li><input type="text" onchange="updateButtonName(' + button.idbutton + ')" class="button-name" id="button-name-' + button.idbutton + '" value="' + button.name + '">' + selectButton + buttonAction + '<button class="button-red" onclick="deleteButton(' + button.idbutton + ')">supprimer</button></li>'
+        if(redirection){
+            buttonRedirection += '<div class="ensemble-next-chapter"><p> chapitre suivant </p> <select onchange="updateButtonNextChapter(' + button.idbutton + ')" class="button-redirect" id="button-redirect-' + button.idbutton + '">'
+            for (let x = 0; x < maxChapters; x++) {
+                let isSelected = '';
+                if(button.nextchapter == chapters[x].idchapter){
+                    isSelected = 'selected';
+                }
+                buttonRedirection += "<option value='" + chapters[x].idchapter + "' " + isSelected + ">" + chapters[x].name + "</option>"
+            }
+            buttonRedirection += "</select>";
+            buttonRedirection += "</div>";
+        }
+
+        HTMLbuttons += '<li><input type="text" onchange="updateButtonName(' + button.idbutton + ')" class="button-name" id="button-name-' + button.idbutton + '" value="' + button.name + '">' + selectButton + buttonAction + buttonRedirection + '<button class="button-red" onclick="deleteButton(' + button.idbutton + ')">Supprimer le bouton</button></li>'
     });
     ensembleButons.innerHTML = HTMLbuttons;
+}
+
+function buttonObject(name, type, action, idButton, objects, idObject){
+    let html = '';
+    html += '<div class="ensemble-button-action"><p>' + name + '</p> <select onchange="updateObject(' + idButton + ', ' + type + ', ' + action + ')" class="button-redirect" id="button-action-object-' + idButton + '">'
+    for (let x = 0; x < objects.length; x++) {
+        let isSelected = '';
+        if(idObject && x == idObject){
+            isSelected = 'selected';
+        }
+        html += "<option value='" + objects[x].idobject + "' " + isSelected + ">" + objects[x].name + "</option>" 
+    }
+    html += "</select>";
+    html += "</div>";
+
+    return html;
 }
 
 async function chargePage(){
@@ -186,7 +242,6 @@ async function chargePage(){
     }else{
         document.getElementsByClassName('ensemble-image')[0].style.display = 'flex';
         document.getElementsByClassName('ensemble-image-mobile')[0].style.display = 'none';
-
     }
 
     chargeButtons();

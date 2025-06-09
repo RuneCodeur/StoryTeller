@@ -68,6 +68,7 @@
             align-items: center;
             flex-wrap: wrap;
             .button-name{
+                margin-top: 5px;
                 margin-left: 5px;
                 max-width: 45%;
                 min-width: 45%;
@@ -78,9 +79,13 @@
             }
             .button-type {
                 height: 30px;
+                margin: 5px;
+            }
+            .button-lostlife{
+                padding: 2px;
             }
 
-            .ensemble-next-chapter{
+            .ensemble-button-action, .ensemble-next-chapter{
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -100,6 +105,11 @@
                     margin-top: 5px;
                     width: 100%;
                 }
+            }
+            .ensemble-next-chapter{
+                max-width: calc(100% - 10px);
+                min-width: calc(100% - 10px);
+                width: calc(100% - 10px);
             }
         }
     }

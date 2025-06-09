@@ -28,8 +28,8 @@ async function chargeObjects(){
 
     objects.forEach(object => {
         htmlObjects += '<li>'
-        htmlObjects += '<input type="text" id="name-object-' + object.idobject + '" onchange="updateObjectName(' + object.idobject + ')" value="' + object.name + '">'
-        htmlObjects += '<textarea id="description-object-' + object.idobject + '" onchange="updateObjectDescription(' + object.idobject + ')">' + object.description + '</textarea>'
+        htmlObjects += '<input type="text" class="name-object" id="name-object-' + object.idobject + '" onchange="updateObjectName(' + object.idobject + ')" value="' + object.name + '">'
+        htmlObjects += '<textarea class="description-object" id="description-object-' + object.idobject + '" onchange="updateObjectDescription(' + object.idobject + ')">' + object.description + '</textarea>'
         
         htmlObjects +='<select onchange="updateObjectType(' + object.idobject + ')" id="type-object-' + object.idobject + '">'
         

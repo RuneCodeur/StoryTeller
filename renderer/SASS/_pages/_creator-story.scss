@@ -47,13 +47,13 @@
             border-radius: 5px;
             margin-bottom: 15px;
             padding: 5px;
-            width: 200px;
+            width: fit-content;
             p{
                 text-align: center;
+                margin-right: 5px;
             }
             input{
                 padding: 2px;
-                text-align:end;
                 width: 50px;
             }
         }
@@ -73,6 +73,14 @@
                 justify-content:space-between;
                 align-items: center;
                 flex-wrap: wrap;
+                .name-object, .description-object{
+                    margin: 5px;
+                }
+                .description-object{
+                    width: calc(100% - 10px);
+                    min-width: calc(100% - 10px);
+                    max-width: calc(100% - 10px);
+                }
                 .button-name{
                     margin-left: 5px;
                     max-width: 45%;

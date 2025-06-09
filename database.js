@@ -43,7 +43,7 @@ function initializeDatabase() {
                     nextchapter INTEGER,
                     giveobject INTEGER,
                     requireobject INTEGER,
-                    useobject INTEGER,
+                    lostlife INTEGER DEFAULT 0,
                     FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE,
                     FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
                     FOREIGN KEY(nextchapter) REFERENCES chapters(idchapter) ON DELETE SET NULL
@@ -318,7 +318,7 @@ function getChapter(idChapter) {
 // récupère tout les boutons du chapitre
 function getButtons(idChapter){
     return new Promise((resolve, reject) => {
-        db.all("SELECT idbutton, name, type, filelink, idchapter, nextchapter FROM buttons WHERE idChapter = ?", [idChapter], (err, rows) => {
+        db.all("SELECT idbutton, name, type, filelink, idchapter, nextchapter, giveobject, requireobject, lostlife FROM buttons WHERE idChapter = ?", [idChapter], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -343,13 +343,13 @@ function getObjects(idStory){
 // crée une nouvelle histoire + crée un chapitre 
 function createStory(value) {
     return new Promise((resolve, reject) => {
-        db.run("INSERT INTO storys (name, rpgmode, ready) VALUES (?, ?, ?)", [value.name, value.rpgmode, 0], function(err) {
+        db.run("INSERT INTO storys (name, rpgmode, ready) VALUES (?, ?, ?)", [value.name, value.rpgmode, 0], async function(err) {
             if (err) {
                 reject(err);
             }
             else {
                 let idStory = this.lastID;
-                createChapter(idStory);
+                await createChapter(idStory);
                 resolve(idStory);
             }
         });
