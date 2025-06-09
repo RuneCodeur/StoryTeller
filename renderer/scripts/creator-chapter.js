@@ -9,12 +9,12 @@ async function deleteChapter(){
 
 // maj du nom du chapitre
 function updateChapterName(){
-    let name = document.getElementById('name-chapter').value
+    let name = document.getElementById('name-chapter').value;
     name = name.trim();
     name = name.substring(0, 50);
-    document.getElementById('name-chapter').value = name
+    document.getElementById('name-chapter').value = name;
     if(!name || name == ''){
-        return
+        return;
     }
     API('updateChapterName', name);
     navGlobal();
@@ -66,12 +66,12 @@ async function deleteButton(idButton){
 // maj du texte d'un bouton
 async function updateButtonName(idButton){
 
-    let name = document.getElementById('button-name-' + idButton).value
+    let name = document.getElementById('button-name-' + idButton).value;
     name = name.trim();
     name = name.substring(0, 50);
-    document.getElementById('button-name-' + idButton).value = name
+    document.getElementById('button-name-' + idButton).value = name;
     if(!name || name == ''){
-        return
+        return;
     }
 
     let value = {
@@ -91,6 +91,33 @@ async function updateButtonType(idButton){
     await API('updateButtonType', value);
     chargeButtons();
     navGlobal();
+}
+
+async function updateLostLife(idButton){
+    let value = {
+        lostlife: document.getElementById('button-lostlife-' + idButton).value,
+        idButton: idButton
+    };
+    await API('updateButtonLostLife', value);
+    chargeButtons();
+    navGlobal();
+}
+
+async function updateObject( idButton, action){
+    if(action == 1){
+        let value = {
+            requireObject: document.getElementById('button-action-object-' + idButton + '-' + action).value,
+            idButton: idButton
+        };
+        await API('updateButtonRequireObject', value);
+    }
+    else if(action == 2){
+        let value = {
+            giveObject: document.getElementById('button-action-object-' + idButton + '-' + action).value,
+            idButton: idButton
+        };
+        await API('updateButtonGiveObject', value);
+    }
 }
 
 // maj du prochain chapitre d'un bouton
@@ -131,14 +158,14 @@ async function chargeButtons(type = 0){
         // mode multi-type de bouton
         if(rpgMode != 0){
 
-            selectButton = '<select onchange="updateButtonType(' + button.idbutton + ')" class="button-type" id="button-type-' + button.idbutton + '">'
+            selectButton = '<select onchange="updateButtonType(' + button.idbutton + ')" class="button-type" id="button-type-' + button.idbutton + '">';
 
             for (let x = 0; x < typeChoice.length; x++) {
                 let isSelected = '';
                 if(button.type == x){
                     isSelected = 'selected';
                 }
-                selectButton += "<option value='" + x + "' " + isSelected + ">" + typeChoice[x] + "</option>"
+                selectButton += "<option value='" + x + "' " + isSelected + ">" + typeChoice[x] + "</option>";
             }
             selectButton += "</select>";
             
@@ -150,68 +177,69 @@ async function chargeButtons(type = 0){
         switch (button.type) {
 
             case 6: // audio
-            buttonAction += '<button>audio</button> <button>changer</button>'
+                buttonAction += '<button>audio</button> <button>changer</button>';
             break;
 
             case 5: // perte de vie
-            buttonAction += '<div class="ensemble-button-action"><p>Perte de vie</p> <input type="number" onchange="updateLostLife(' + button.idbutton + ')" id="button-lostlife-' + button.idbutton + '" class="button-lostlife" min="1" max="100" value="' + button.lostlife+ '"></div>'
-            redirection = true;
+                buttonAction += '<div class="ensemble-button-action"><p>Perte de vie</p> <input type="number" onchange="updateLostLife(' + button.idbutton + ')" id="button-lostlife-' + button.idbutton + '" class="button-lostlife" min="1" max="100" value="' + button.lostlife+ '"></div>';
+                redirection = true;
             break;
 
             case 4: // objet requis
-            buttonAction += buttonObject('objet requis', button.type, 1, button.idbutton, objects, button.requireobject)
-            redirection = true;
+                buttonAction += buttonObject('objet requis', 1, button.idbutton, objects, button.requireobject);
+                redirection = true;
             break;
             
             case 3: // echange
-            buttonAction += buttonObject('objet à donner', button.type, 1, button.idbutton, objects, button.requireobject)
-            buttonAction += buttonObject('gain', button.type, 2, button.idbutton, objects, button.giveobject)
-            redirection = true;
+                buttonAction += buttonObject('objet à donner (perdu)', 1, button.idbutton, objects, button.requireobject);
+                buttonAction += buttonObject('gain', 2, button.idbutton, objects, button.giveobject);
+                redirection = true;
             break;
 
             case 2: // perte objet
-            buttonAction += buttonObject('objet requis (perdu)', button.type, 1, button.idbutton, objects, button.requireobject)
-            redirection = true;
+                buttonAction += buttonObject('objet requis (perdu)', 1, button.idbutton, objects, button.requireobject);
+                redirection = true;
             break;
 
             case 1: // gain objet
-            buttonAction += buttonObject('gain', button.type, 2, button.idbutton, objects, button.giveobject)
-            redirection = true;
+                buttonAction += buttonObject('gain', 2, button.idbutton, objects, button.giveobject);
+                redirection = true;
             break;
 
             case 0: // simple redirection
             default:
                 redirection = true;
-                break;
+            break;
         }
 
         if(redirection){
-            buttonRedirection += '<div class="ensemble-next-chapter"><p> chapitre suivant </p> <select onchange="updateButtonNextChapter(' + button.idbutton + ')" class="button-redirect" id="button-redirect-' + button.idbutton + '">'
+            buttonRedirection += '<div class="ensemble-next-chapter"><p> chapitre suivant </p> <select onchange="updateButtonNextChapter(' + button.idbutton + ')" class="button-redirect" id="button-redirect-' + button.idbutton + '">';
             for (let x = 0; x < maxChapters; x++) {
                 let isSelected = '';
                 if(button.nextchapter == chapters[x].idchapter){
                     isSelected = 'selected';
                 }
-                buttonRedirection += "<option value='" + chapters[x].idchapter + "' " + isSelected + ">" + chapters[x].name + "</option>"
+                buttonRedirection += "<option value='" + chapters[x].idchapter + "' " + isSelected + ">" + chapters[x].name + "</option>";
             }
             buttonRedirection += "</select>";
             buttonRedirection += "</div>";
         }
 
-        HTMLbuttons += '<li><input type="text" onchange="updateButtonName(' + button.idbutton + ')" class="button-name" id="button-name-' + button.idbutton + '" value="' + button.name + '">' + selectButton + buttonAction + buttonRedirection + '<button class="button-red" onclick="deleteButton(' + button.idbutton + ')">Supprimer le bouton</button></li>'
+        HTMLbuttons += '<li><input type="text" onchange="updateButtonName(' + button.idbutton + ')" class="button-name" id="button-name-' + button.idbutton + '" value="' + button.name + '">' + selectButton + buttonAction + buttonRedirection + '<button class="button-red" onclick="deleteButton(' + button.idbutton + ')">Supprimer le bouton</button></li>';
     });
     ensembleButons.innerHTML = HTMLbuttons;
 }
 
-function buttonObject(name, type, action, idButton, objects, idObject){
+function buttonObject(name, action, idButton, objects, idObject){
     let html = '';
-    html += '<div class="ensemble-button-action"><p>' + name + '</p> <select onchange="updateObject(' + idButton + ', ' + type + ', ' + action + ')" class="button-redirect" id="button-action-object-' + idButton + '">'
+    html += '<div class="ensemble-button-action"><p>' + name + '</p> <select onchange="updateObject(' + idButton + ', ' + action + ')" class="button-redirect" id="button-action-object-' + idButton + '-' + action + '">';
+    objects.unshift({idobject: 'null', name:'---'});
     for (let x = 0; x < objects.length; x++) {
         let isSelected = '';
-        if(idObject && x == idObject){
+        if(idObject && objects[x].idobject == idObject){
             isSelected = 'selected';
         }
-        html += "<option value='" + objects[x].idobject + "' " + isSelected + ">" + objects[x].name + "</option>" 
+        html += "<option value='" + objects[x].idobject + "' " + isSelected + ">" + objects[x].name + "</option>";
     }
     html += "</select>";
     html += "</div>";
@@ -245,7 +273,6 @@ async function chargePage(){
     }
 
     chargeButtons();
-    
 }
   
 chargePage();

@@ -41,12 +41,14 @@ function initializeDatabase() {
                     idstory INTEGER,
                     idchapter INTEGER,
                     nextchapter INTEGER,
-                    giveobject INTEGER,
-                    requireobject INTEGER,
+                    giveobject INTEGER DEFAULT NULL,
+                    requireobject INTEGER DEFAULT NULL,
                     lostlife INTEGER DEFAULT 0,
                     FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE,
                     FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
-                    FOREIGN KEY(nextchapter) REFERENCES chapters(idchapter) ON DELETE SET NULL
+                    FOREIGN KEY(nextchapter) REFERENCES chapters(idchapter) ON DELETE SET NULL,
+                    FOREIGN KEY(giveobject) REFERENCES objects(idobject) ON DELETE SET NULL,
+                    FOREIGN KEY(requireobject) REFERENCES objects(idobject) ON DELETE SET NULL
                 )`
             );
 
@@ -641,11 +643,49 @@ function updateButtonName(value) {
     });
 }
 
-
 // met à jour le type de 1 bouton
 function updateButtonType(value) {
     return new Promise((resolve, reject) => {
         db.run("UPDATE buttons SET type = ? where idbutton = ?", [value.type, value.idButton], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateButtonLostLife(value) {
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE buttons SET lostlife = ? where idbutton = ?", [value.lostlife, value.idButton], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateButtonRequireObject(value) {
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE buttons SET requireobject = ? where idbutton = ?", [value.requireObject, value.idButton], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateButtonGiveObject(value) {
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE buttons SET giveobject = ? where idbutton = ?", [value.giveObject, value.idButton], function(err) {
             if (err) {
                 reject(err);
             }
@@ -715,6 +755,9 @@ module.exports = {
     updateButton,
     updateButtonName,
     updateButtonType,
+    updateButtonLostLife,
+    updateButtonRequireObject,
+    updateButtonGiveObject,
     updateButtonNextChapter,
     deleteButton
 };

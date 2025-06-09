@@ -685,6 +685,39 @@ const functionMap = {
     }
   },
 
+  updateButtonLostLife: async (value) => {
+    try {
+      let result = await db.updateButtonLostLife(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updateButtonRequireObject: async (value) => {
+    try {
+      let result = await db.updateButtonRequireObject(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updateButtonGiveObject: async (value) => {
+    try {
+      let result = await db.updateButtonGiveObject(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
   updateButtonNextChapter: async (value) => {
     try {
       let result = await db.updateButtonNextChapter(value);
@@ -921,6 +954,18 @@ ipcMain.handle("update-button-type", async (event, value) => {
   return functionMap.updateButtonType(value);
 });
 
+ipcMain.handle("update-button-lostlife", async (event, value) => {
+  return functionMap.updateButtonLostLife(value);
+});
+
+ipcMain.handle("update-button-requireobject", async (event, value) => {
+  return functionMap.updateButtonRequireObject(value);
+});
+
+ipcMain.handle("update-button-giveobject", async (event, value) => {
+  return functionMap.updateButtonGiveObject(value);
+});
+
 ipcMain.handle("update-button-next-chapter", async (event, value) => {
   return functionMap.updateButtonNextChapter(value);
 });
@@ -1145,7 +1190,7 @@ function createServer(){
 }
 
 app.whenReady().then(() =>{
-  if(!config || !config.version || config.version != configDefault.version ){
+  if(!config || !config.version || config.version != configDefault.version || 1){
 
     db.MAJDATAbase();
     config.version = configDefault.version;
