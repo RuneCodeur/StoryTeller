@@ -646,7 +646,7 @@ function updateButtonName(value) {
 // met à jour le type de 1 bouton
 function updateButtonType(value) {
     return new Promise((resolve, reject) => {
-        db.run("UPDATE buttons SET type = ? where idbutton = ?", [value.type, value.idButton], function(err) {
+        db.run("UPDATE buttons SET type = ?, requireobject = null, giveobject = null where idbutton = ?", [value.type, value.idButton], function(err) {
             if (err) {
                 reject(err);
             }
