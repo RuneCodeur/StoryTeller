@@ -1190,7 +1190,7 @@ function createServer(){
 }
 
 app.whenReady().then(() =>{
-  if(!config || !config.version || config.version != configDefault.version || 1){
+  if(!config || !config.version || config.version != configDefault.version){
 
     db.MAJDATAbase();
     config.version = configDefault.version;

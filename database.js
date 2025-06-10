@@ -65,10 +65,13 @@ function initializeDatabase() {
 
             db.run(
                 `CREATE TABLE IF NOT EXISTS chaptertexteffects (
+                    idchaptertexteffect INTEGER PRIMARY KEY AUTOINCREMENT,
+                    idstory INTEGER,
                     idchapter INTEGER,
                     idobject INTEGER,
                     texte TEXT,
-                    positive INTEGER DEFAULT 1, -- 1 = si objet est possédé, 0 = si objet n’est PAS possédé
+                    positive INTEGER DEFAULT 1,
+                    FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE,
                     FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
                     FOREIGN KEY(idobject) REFERENCES objects(idobject) ON DELETE CASCADE
                 )`
