@@ -535,6 +535,43 @@ const functionMap = {
     }
   },
 
+  createTexteffect: async () => {
+    try {
+      let value= {
+        idStory: idStory,
+        idChapter: idChapter
+      }
+      let result = await db.createTexteffect(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updateTexteTexteffect: async (value) => {
+    try {
+      let result = await db.updateTexteTexteffect(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updatePositiveTexteffect: async (value) => {
+    try {
+      let result = await db.updatePositiveTexteffect(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
   createChapter: async () => {
     try {
       let result = await db.createChapter(idStory);
@@ -777,6 +814,11 @@ const functionMap = {
     return info;
   },
 
+  getTexteffects: async () => {
+    let info = await db.getTexteffects(idChapter);
+    return info;
+  },
+
   getChapter: async () => {
     let info = await db.getChapter(idChapter);
     return info;
@@ -906,6 +948,18 @@ ipcMain.handle("create-object", async () => {
   return functionMap.createObject();
 });
 
+ipcMain.handle("create-texteffect", async () => {
+  return functionMap.createTexteffect();
+});
+
+ipcMain.handle("update-texte-texteffect", async (event, value) => {
+  return functionMap.updateTexteTexteffect(value);
+});
+
+ipcMain.handle("update-positive-texteffect", async (event, value) => {
+  return functionMap.updatePositiveTexteffect(value);
+});
+
 ipcMain.handle("create-chapter", async () => {
   return functionMap.createChapter();
 });
@@ -1013,6 +1067,11 @@ ipcMain.handle("get-story", async () => {
 ipcMain.handle("get-chapters", async () => {
   return functionMap.getChapters();
 });
+
+ipcMain.handle("get-texteffects", async () => {
+  return functionMap.getTexteffects();
+});
+
 
 ipcMain.handle("get-chapter", async () => {
   return functionMap.getChapter();

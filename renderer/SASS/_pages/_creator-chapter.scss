@@ -26,6 +26,46 @@
         margin: 15px 0 ;
     }
 
+    #global-ensemble-texteffects{
+        margin: 25px 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+        ul{
+            width: 100%;
+            max-width: 100%;
+            li{
+                width: 100%;
+                max-width: 100%;
+                margin: 10px 0;
+                padding: 10px;
+                border: 3px black solid;
+                background-color: rgba(0, 0, 0, 0.10);
+                border-radius: 5px;
+                display: flex;
+                justify-content:space-between;
+                align-items: center;
+                flex-wrap: wrap;
+                .ensemble-param-texteffect{
+                    display: flex;
+                    justify-content:flex-start;
+                    align-items: center;
+                    width: auto;
+                    flex-wrap: nowrap;
+                    overflow: hidden;
+                    margin: 5px 0;
+                    select{
+                        width: auto;
+                        max-width: 60%;
+                        margin: 0 5px;
+                    }
+                }
+            }
+        }
+    }
+
     .ensemble-image{
         margin: 25px 0;
         display: flex;

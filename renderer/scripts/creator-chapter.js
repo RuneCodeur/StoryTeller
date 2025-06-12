@@ -56,6 +56,12 @@ async function createButton(){
     navGlobal();
 }
 
+async function createTexteffect(){
+    await API('createTexteffect');
+    chargeTextEffects();
+    navGlobal();
+}
+
 // suppression d'un bouton
 async function deleteButton(idButton){
     await API('deleteButton', idButton);
@@ -131,8 +137,80 @@ async function updateButtonNextChapter(idButton){
     navGlobal();
 }
 
+async function updateTexteTexteffect(idtexteffect){
+    let value = {
+        texte: document.getElementById('texte-texteffect-' + idtexteffect).value,
+        idtexteffect: idtexteffect
+    };
+    await API('updateTexteTexteffect', value);
+    chargeTextEffects();
+    navGlobal();
+}
+
+async function updatePositiveTexteffect(idtexteffect){
+    let value = {
+        positive: document.getElementById('positive-texteffect-' + idtexteffect).value,
+        idtexteffect: idtexteffect
+    };
+    await API('updatePositiveTexteffect', value);
+    chargeTextEffects();
+    navGlobal();
+}
+
+async function updateTexteTexteffect(idtexteffect){
+    let value = {
+        texte: document.getElementById('texte-texteffect-' + idtexteffect).value,
+        idtexteffect: idtexteffect
+    };
+    await API('updateTexteTexteffect', value);
+    chargeTextEffects();
+    navGlobal();
+}
+
+async function chargeTextEffects(){
+    let texteffects = await API('getTexteffects');
+    let objects = await API('getObjects');
+    objects.unshift({idobject: 'null', name:'---'});
+
+    let HTMLtexteffects = ''
+    let listPositive = ['apparait', 'disparait'];
+
+    texteffects.forEach(texteffect => {
+        let HTMLselectPositive = '';
+        let HTMLObjects = '';
+        HTMLtexteffects += '<li>';
+
+        HTMLtexteffects += '<textarea id="texte-texteffect-'+texteffect.idtexteffect+'" onchange="updateTexteTexteffect('+texteffect.idtexteffect+')">'+texteffect.texte+'</textarea>';
+
+        HTMLselectPositive = '<select onchange="updatePositiveTexteffect(' + texteffect.idtexteffect + ')" class="button-type" id="positive-texteffect-' + texteffect.idtexteffect + '">';
+        for (let x = 0; x < listPositive.length; x++) {
+            let isSelected = '';
+            if(texteffect.positive == x){
+                isSelected = 'selected';
+            }
+            HTMLselectPositive += "<option value='" + x + "' " + isSelected + ">" + listPositive[x] + "</option>";
+        }
+        HTMLselectPositive += "</select>";
+
+        HTMLObjects = '<select onchange="updateObjectTexteffect(' + texteffect.idtexteffect + ')" class="button-type" id="object-texteffect-' + texteffect.idtexteffect + '">';
+        for (let x = 0; x < objects.length; x++) {
+            let isSelected = '';
+            if(texteffect.idobject == objects[x].idobject){
+                isSelected = 'selected';
+            }
+            HTMLObjects += "<option value='" +  objects[x].idobject + "' " + isSelected + ">" +  objects[x].name + "</option>";
+        }
+        HTMLObjects += "</select>";
+
+        HTMLtexteffects += '<div class="ensemble-param-texteffect"><p>le texte </p>' + HTMLselectPositive + '<p> avec l\'objet : </p>' + HTMLObjects + ' </div>';
+        HTMLtexteffects += '<button class="button-red" onclick="deleteTexteffect(' + texteffect.idtexteffect + ')">Supprimer</button>';
+        HTMLtexteffects += '</li>';
+    });
+    document.getElementById('ensemble-texteffects').innerHTML = HTMLtexteffects;
+}
+
 // charge les boutons
-async function chargeButtons(type = 0){
+async function chargeButtons(){
     let buttons = await API('getButtons');
     let chapters = await API('getChapters');
     let story = await API('getStory');
@@ -248,11 +326,13 @@ function buttonObject(name, action, idButton, objects, idObject){
 }
 
 async function chargePage(){
+    let story = await API('getStory');
     let chapter = await API('getChapter');
 
     let imageFolder = await API('getImageFolder');
     let file = imageFolder + "\\" + chapter.imagelink;
     let isFile = await API('isFileExist', file);
+    let texteffects = document.getElementById('global-ensemble-texteffects');
 
     document.getElementById('position-chapter').innerText = "Chapitre " + chapter.positionChapter;
     document.getElementById('name-chapter').value = chapter.name;
@@ -270,6 +350,13 @@ async function chargePage(){
     }else{
         document.getElementsByClassName('ensemble-image')[0].style.display = 'flex';
         document.getElementsByClassName('ensemble-image-mobile')[0].style.display = 'none';
+    }
+
+    if(story.rpgmode && story.rpgmode == 1){
+        texteffects.style.display = "flex";
+        chargeTextEffects()
+    }else{
+        texteffects.style.display = "none";
     }
 
     chargeButtons();

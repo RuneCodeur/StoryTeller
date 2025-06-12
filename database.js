@@ -64,13 +64,13 @@ function initializeDatabase() {
             );
 
             db.run(
-                `CREATE TABLE IF NOT EXISTS chaptertexteffects (
-                    idchaptertexteffect INTEGER PRIMARY KEY AUTOINCREMENT,
+                `CREATE TABLE IF NOT EXISTS texteffects (
+                    idtexteffect INTEGER PRIMARY KEY AUTOINCREMENT,
                     idstory INTEGER,
                     idchapter INTEGER,
-                    idobject INTEGER,
-                    texte TEXT,
-                    positive INTEGER DEFAULT 1,
+                    idobject INTEGER DEFAULT NULL,
+                    texte TEXT DEFAULT '',
+                    positive INTEGER DEFAULT 0,
                     FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE,
                     FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
                     FOREIGN KEY(idobject) REFERENCES objects(idobject) ON DELETE CASCADE
@@ -278,6 +278,18 @@ function getChapters(idStory){
     });
 }
 
+function getTexteffects(idChapter){
+    return new Promise((resolve, reject) => {
+        db.all("SELECT idtexteffect, texte, idobject, positive FROM texteffects WHERE idchapter = ?", [idChapter], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
 // récupère tout les chapitres de 1 histoire (complet)
 function getAllChapters(idStory){
     return new Promise((resolve, reject) => {
@@ -453,6 +465,45 @@ function deleteObject(idObject) {
 function createObject(idStory) {
 return new Promise((resolve, reject) => {
         db.run("INSERT INTO objects (idstory, name, description) VALUES (?, ?, ?)", [idStory, 'objet', ''], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function createTexteffect(value) {
+return new Promise((resolve, reject) => {
+        db.run("INSERT INTO texteffects (idstory, idchapter) VALUES (?, ?)", [value.idStory, value.idChapter], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateTexteTexteffect(value){
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE texteffects SET texte = ? where idtexteffect = ?", [value.texte, value.idtexteffect], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updatePositiveTexteffect(value){
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE texteffects SET positive = ? where idtexteffect = ?", [value.positive, value.idtexteffect], function(err) {
             if (err) {
                 reject(err);
             }
@@ -733,11 +784,15 @@ module.exports = {
     getAllStorys,
     getStory,
     getChapters,
+    getTexteffects,
     getAllChapters,
     getChapter,
     getButtons,
     getObjects,
     createObject,
+    createTexteffect,
+    updateTexteTexteffect,
+    updatePositiveTexteffect,
     createStory,
     updateStory,
     updateModeStory,

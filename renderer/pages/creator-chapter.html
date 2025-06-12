@@ -3,6 +3,13 @@
     <h1 id="position-chapter">chapitre</h1>
     <input onchange="updateChapterName()" placeholder="Nom du chapitre..." type="text" name="name-chapter" id="name-chapter">
     <textarea onkeyup="updateChapterTexte()" onchange="updateChapterTexte()" name="texte-chapter" id="texte-chapter" placeholder="Texte..."></textarea>
+    
+    <div id="global-ensemble-texteffects">
+        <h2> textes interactifs</h2>
+        <button class="button-hover" onclick="createTexteffect()">Nouveau texte</button>
+        <ul id="ensemble-texteffects"></ul>
+    </div>
+    
     <div class="ensemble-image">
         <img id="image-preview">
         <button class="button-hover" onclick="updateImageChapter()">Choisir une image</button>
@@ -11,7 +18,7 @@
         <p>Choix d'une image non-disponible pour la version mobile</p>
     </div>
 
-    <h2>boutons</h2>
+    <h2>Boutons</h2>
     <button class="button-hover" onclick="createButton()">Nouveau bouton</button>
     <ul id="ensemble-butons"></ul>
     
