@@ -35,6 +35,10 @@
         }
     }
     #screen-texte{
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
         padding: 20px;
         margin: 10px;
         border-radius: 5px;
@@ -43,10 +47,16 @@
         right: 0;
         height:calc(80% - 20px);
         width: calc(25% - 20px);
-        text-align: left;
         overflow: auto;
-        color: $colorButton;
         background-color: $colorBackground;
+        p{
+            text-align: left;
+            color: $colorButton;
+        }
+        .texteffect{
+            font-style: italic;
+            margin-top: 10px;
+        }
     }
     #screen-action{
         padding: 10px;

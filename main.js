@@ -23,6 +23,7 @@ let mainWindow;
 let secondaryWindow;
 let mobileSocket = null;
 let modScreen = 1;
+let inventory = [];
 
 const imageFolder = path.join(app.getPath("userData"), "images");
 const audioFolder = path.join(app.getPath("userData"), "audio");
@@ -92,6 +93,20 @@ const functionMap = {
         mainWindow.webContents.send("reload-page", value);
         secondaryWindow.webContents.send("reload-page", value);
     }
+  },
+
+  initInventory: () => {
+    inventory = [];
+    return;
+  },
+
+  insertInvetory: (value) =>{
+    inventory.push(value);
+    return inventory;
+  },
+
+  getInvetory: () =>{
+    return inventory;
   },
 
   setWifiName: (value) => {
@@ -906,6 +921,18 @@ ipcMain.on('open-mobile-screen-qrcode', async () => {
 
 ipcMain.handle("nav-global", (event, value) => {
   functionMap.navGlobal(value);
+});
+
+ipcMain.handle("init-inventory", async () => {
+  return functionMap.initInventory();
+});
+
+ipcMain.handle("insert-invetory", async (event, value) => {
+  return functionMap.insertInvetory(value);
+});
+
+ipcMain.handle("get-inventory", async () => {
+  return functionMap.getInvetory();
 });
 
 ipcMain.handle("select-image-file", async () => {

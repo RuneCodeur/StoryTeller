@@ -373,6 +373,10 @@ ul {
      object-fit: contain;
 }
 #story #screen-texte {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   padding: 20px;
   margin: 10px;
   border-radius: 5px;
@@ -381,10 +385,16 @@ ul {
   right: 0;
   height: calc(80% - 20px);
   width: calc(25% - 20px);
-  text-align: left;
   overflow: auto;
-  color: #E9DBC2;
   background-color: #3E2C41;
+}
+#story #screen-texte p {
+  text-align: left;
+  color: #E9DBC2;
+}
+#story #screen-texte .texteffect {
+  font-style: italic;
+  margin-top: 10px;
 }
 #story #screen-action {
   padding: 10px;

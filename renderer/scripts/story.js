@@ -47,7 +47,29 @@ async function showTexte(){
   // chapitre en cours
   if(idChapter){
     let chapter = await API('getChapter');
-    texte = chapter.texte.replace(/\n/g, "<br>");
+    texte = '<p>' + chapter.texte.replace(/\n/g, "<br>") + '<p>';
+
+    if(chapter.rpgmode && chapter.rpgmode == 1){
+      let inventory = await API('getInventory')
+      let texteffects = await API('getTexteffects');
+      
+      texteffects.forEach(texteffect => {
+        let objectFound = false;
+
+        for (let i = 0; i < inventory.length; i++) {
+          if(inventory[i] && inventory[i].idobject && inventory[i].idobject == texteffect.idobject){
+            objectFound = true;
+            break;
+          }
+        }
+
+        if((objectFound && texteffect.positive == 0) || (!objectFound && texteffect.positive == 1)){
+          texte += '<p class="texteffect" >' + texteffect.texte.replace(/\n/g, "<br>") + '</p>';
+        }
+      
+        
+      });
+    }
   }
 
   screenTexte.innerHTML = texte
@@ -117,6 +139,7 @@ async function chargePage(){
   let idStory = await API('getIdStory');
   let idChapter = await API('getIdChapter');
   let modeScreen = await API('getModeScreen');
+  await API('initInventory');
   
   if(idChapter){
     transition();

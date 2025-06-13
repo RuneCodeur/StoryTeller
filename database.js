@@ -306,7 +306,7 @@ function getAllChapters(idStory){
 // récupère le chapitre avec sa position
 function getChapter(idChapter) {
     return new Promise((resolve, reject) => {
-        db.get("SELECT idchapter, name, texte, imagelink, idstory FROM chapters WHERE idchapter = ?", [idChapter], (err, row) => {
+        db.get("SELECT chapters.idchapter, chapters.name, chapters.texte, chapters.imagelink, chapters.idstory, storys.rpgmode FROM chapters LEFT JOIN storys ON storys.idstory = chapters.idstory WHERE idchapter = ?", [idChapter], (err, row) => {
             if (err) {
                 return reject(err);
             }
