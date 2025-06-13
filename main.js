@@ -572,6 +572,28 @@ const functionMap = {
     }
   },
 
+  updateObjectTexteffect: async (value) => {
+    try {
+      let result = await db.updateObjectTexteffect(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  deleteTexteffect: async (idTexteffect) => {
+    try {
+      let result = await db.deleteTexteffect(idTexteffect);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
   createChapter: async () => {
     try {
       let result = await db.createChapter(idStory);
@@ -958,6 +980,14 @@ ipcMain.handle("update-texte-texteffect", async (event, value) => {
 
 ipcMain.handle("update-positive-texteffect", async (event, value) => {
   return functionMap.updatePositiveTexteffect(value);
+});
+
+ipcMain.handle("update-object-texteffect", async (event, value) => {
+  return functionMap.updateObjectTexteffect(value);
+});
+
+ipcMain.handle("delete-texteffect", async (event, value) => {
+  return functionMap.deleteTexteffect(value);
 });
 
 ipcMain.handle("create-chapter", async () => {

@@ -34,6 +34,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   createTexteffect: () => ipcRenderer.invoke("create-texteffect"),
   updateTexteTexteffect: (value) => ipcRenderer.invoke("update-texte-texteffect", value),
   updatePositiveTexteffect: (value) => ipcRenderer.invoke("update-positive-texteffect", value),
+  updateObjectTexteffect: (value) => ipcRenderer.invoke("update-object-texteffect", value),
+  deleteTexteffect: (value) => ipcRenderer.invoke("delete-texteffect", value),
   createChapter: () => ipcRenderer.invoke("create-chapter"),
   updateChapter: (value) => ipcRenderer.invoke("update-chapter", value),
   updateObjectName: (value) => ipcRenderer.invoke("update-object-name", value),

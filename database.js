@@ -490,7 +490,7 @@ return new Promise((resolve, reject) => {
 
 function updateTexteTexteffect(value){
     return new Promise((resolve, reject) => {
-        db.run("UPDATE texteffects SET texte = ? where idtexteffect = ?", [value.texte, value.idtexteffect], function(err) {
+        db.run("UPDATE texteffects SET texte = ? where idtexteffect = ?", [value.texte, value.idTexteffect], function(err) {
             if (err) {
                 reject(err);
             }
@@ -503,7 +503,33 @@ function updateTexteTexteffect(value){
 
 function updatePositiveTexteffect(value){
     return new Promise((resolve, reject) => {
-        db.run("UPDATE texteffects SET positive = ? where idtexteffect = ?", [value.positive, value.idtexteffect], function(err) {
+        db.run("UPDATE texteffects SET positive = ? where idtexteffect = ?", [value.positive, value.idTexteffect], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateObjectTexteffect(value){
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE texteffects SET idobject = ? where idtexteffect = ?", [value.idObject, value.idTexteffect], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function deleteTexteffect(idTexteffect){
+    return new Promise((resolve, reject) => {
+        db.run("DELETE FROM texteffects WHERE idtexteffect = ?", [idTexteffect], function(err) {
             if (err) {
                 reject(err);
             }
@@ -793,6 +819,8 @@ module.exports = {
     createTexteffect,
     updateTexteTexteffect,
     updatePositiveTexteffect,
+    updateObjectTexteffect,
+    deleteTexteffect,
     createStory,
     updateStory,
     updateModeStory,

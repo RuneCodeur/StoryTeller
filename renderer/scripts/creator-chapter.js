@@ -137,32 +137,36 @@ async function updateButtonNextChapter(idButton){
     navGlobal();
 }
 
-async function updateTexteTexteffect(idtexteffect){
+async function updateTexteTexteffect(idTexteffect){
     let value = {
-        texte: document.getElementById('texte-texteffect-' + idtexteffect).value,
-        idtexteffect: idtexteffect
+        texte: document.getElementById('texte-texteffect-' + idTexteffect).value,
+        idTexteffect: idTexteffect
     };
     await API('updateTexteTexteffect', value);
-    chargeTextEffects();
     navGlobal();
 }
 
-async function updatePositiveTexteffect(idtexteffect){
+async function updatePositiveTexteffect(idTexteffect){
     let value = {
-        positive: document.getElementById('positive-texteffect-' + idtexteffect).value,
-        idtexteffect: idtexteffect
+        positive: document.getElementById('positive-texteffect-' + idTexteffect).value,
+        idTexteffect: idTexteffect
     };
     await API('updatePositiveTexteffect', value);
-    chargeTextEffects();
     navGlobal();
 }
 
-async function updateTexteTexteffect(idtexteffect){
+async function updateObjectTexteffect(idTexteffect){
     let value = {
-        texte: document.getElementById('texte-texteffect-' + idtexteffect).value,
-        idtexteffect: idtexteffect
+        idObject: document.getElementById('object-texteffect-' + idTexteffect).value,
+        idTexteffect: idTexteffect
     };
-    await API('updateTexteTexteffect', value);
+    await API('updateObjectTexteffect', value);
+    navGlobal();
+}
+
+async function deleteTexteffect(idTexteffect){
+
+    await API('deleteTexteffect', idTexteffect);
     chargeTextEffects();
     navGlobal();
 }
@@ -180,7 +184,7 @@ async function chargeTextEffects(){
         let HTMLObjects = '';
         HTMLtexteffects += '<li>';
 
-        HTMLtexteffects += '<textarea id="texte-texteffect-'+texteffect.idtexteffect+'" onchange="updateTexteTexteffect('+texteffect.idtexteffect+')">'+texteffect.texte+'</textarea>';
+        HTMLtexteffects += '<textarea id="texte-texteffect-'+texteffect.idtexteffect+'" onkeyup="updateTexteTexteffect('+texteffect.idtexteffect+')" onchange="updateTexteTexteffect('+texteffect.idtexteffect+')" >'+texteffect.texte+'</textarea>';
 
         HTMLselectPositive = '<select onchange="updatePositiveTexteffect(' + texteffect.idtexteffect + ')" class="button-type" id="positive-texteffect-' + texteffect.idtexteffect + '">';
         for (let x = 0; x < listPositive.length; x++) {
