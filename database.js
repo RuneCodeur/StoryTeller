@@ -345,6 +345,18 @@ function getButtons(idChapter){
     });
 }
 
+function getButton(idButton){
+    return new Promise((resolve, reject) => {
+        db.get("SELECT name, type, filelink, idchapter, nextchapter, giveobject, requireobject, lostlife FROM buttons WHERE idbutton = ?", [idButton], (err, rows) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}
+
 function getObjects(idStory){
     return new Promise((resolve, reject) => {
         db.all("SELECT idobject, name, description, type FROM objects WHERE idstory = ?", [idStory], (err, rows) => {
@@ -814,6 +826,7 @@ module.exports = {
     getAllChapters,
     getChapter,
     getButtons,
+    getButton,
     getObjects,
     createObject,
     createTexteffect,

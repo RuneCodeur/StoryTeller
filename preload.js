@@ -18,10 +18,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getChapter: () => ipcRenderer.invoke("get-chapter"),
   getIdChapter: () => ipcRenderer.invoke("get-id-chapter"),
   getButtons: () => ipcRenderer.invoke("get-buttons"),
+  getButton: (value) => ipcRenderer.invoke("get-button", value),
   getObjects: () => ipcRenderer.invoke("get-objects"),
   initInventory:() => ipcRenderer.invoke("init-inventory"),
   getInventory:() => ipcRenderer.invoke("get-inventory"),
-  insertInvetory:(value) => ipcRenderer.invoke("insert-inventory", value),
+  getLife:() => ipcRenderer.invoke("get-life"),
   
   // page création d'histoire
   updateImageChapter: (value) =>ipcRenderer.invoke("update-image-chapter", value),

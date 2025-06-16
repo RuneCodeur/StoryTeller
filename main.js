@@ -24,6 +24,7 @@ let secondaryWindow;
 let mobileSocket = null;
 let modScreen = 1;
 let inventory = [];
+let life = 0;
 
 const imageFolder = path.join(app.getPath("userData"), "images");
 const audioFolder = path.join(app.getPath("userData"), "audio");
@@ -70,6 +71,21 @@ const functionMap = {
     idStory = value.idStory;
     idChapter = value.idChapter;
 
+    // maj du nb de point de vie
+    if(value.life){
+      life = value.life;
+    }
+
+    // ajoute l'objet
+    if(value.giveObject){
+      functionMap.insertInvetory(value.giveObject);
+    }
+
+    // supprime l'objet
+    if(value.deleteObject){
+      functionMap.deleteInvetory(value.deleteObject);
+    }
+
     switch (value.screen) {
       case 'page-main':
         if(secondaryWindow){
@@ -105,8 +121,20 @@ const functionMap = {
     return inventory;
   },
 
+  deleteInvetory: (value) =>{
+    let i = inventory.indexOf(value);
+    if (i !== -1) {
+      inventory.splice(i, 1);
+    }
+    return inventory;
+  },
+
   getInvetory: () =>{
     return inventory;
+  },
+
+  getLife: () =>{
+    return life;
   },
 
   setWifiName: (value) => {
@@ -866,6 +894,11 @@ const functionMap = {
     return info;
   },
 
+  getButton: async (value) => {
+    let info = await db.getButton(value);
+    return info;
+  },
+
   getObjects: async () => {
     let info = await db.getObjects(idStory);
     return info;
@@ -927,13 +960,14 @@ ipcMain.handle("init-inventory", async () => {
   return functionMap.initInventory();
 });
 
-ipcMain.handle("insert-invetory", async (event, value) => {
-  return functionMap.insertInvetory(value);
-});
-
 ipcMain.handle("get-inventory", async () => {
   return functionMap.getInvetory();
 });
+
+ipcMain.handle("get-life", async () => {
+  return functionMap.getLife();
+});
+
 
 ipcMain.handle("select-image-file", async () => {
   return functionMap.selectImageFile();
@@ -1136,6 +1170,10 @@ ipcMain.handle("get-chapter", async () => {
 
 ipcMain.handle("get-buttons", async () => {
   return functionMap.getButtons();
+});
+
+ipcMain.handle("get-button", async (event, value) => {
+  return functionMap.getButton(value);
 });
 
 ipcMain.handle("get-objects", async () => {
