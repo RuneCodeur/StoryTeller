@@ -66,13 +66,39 @@ async function showTexte(){
         if((objectFound && texteffect.positive == 0) || (!objectFound && texteffect.positive == 1)){
           texte += '<p class="texteffect" >' + texteffect.texte.replace(/\n/g, "<br>") + '</p>';
         }
-      
-        
+  
       });
     }
   }
 
   screenTexte.innerHTML = texte
+}
+
+async function showInventory(){
+  let screenInventory = document.getElementById('screen-inventory');
+  let inventory = await API('getInventory');
+  let Objects = await API('getObjects');
+  let htmlInventory = '';
+  htmlInventory += '<ul>';
+
+  inventory.forEach(item => {
+    for (let i = 0; i < Objects.length; i++) {
+      if(Objects[i] && Objects[i].idobject && Objects[i].idobject == item && Objects[i].type == 1){
+        htmlInventory += '<li>' + Objects[i].name + '</li>';
+        break;
+      }
+    }
+  });
+  
+  htmlInventory += '</ul>';
+  screenInventory .innerHTML = htmlInventory;
+}
+
+async function showLife(){
+  let screenLife = document.getElementById('screen-life');
+  let life = await API('getLife');
+
+  screenLife.innerHTML = '<p>❤️: ' + life + '</p>';
 }
 
 async function showAction(){
@@ -145,6 +171,7 @@ async function actionButon(idButton = null){
   
   else{
     let button = await API('getButton', idButton);
+    life = await API('getLife');
    
 
     // chapitre suivant
@@ -190,6 +217,25 @@ function endStory(){
   goTo(1);
 }
 
+async function gameOver(){
+  let screenImage = document.getElementById('screen-image');
+  let screenAction = document.getElementById('screen-action');
+  let screenTexte = document.getElementById('screen-texte');
+  let screenInventory = document.getElementById('screen-inventory');
+  let imageHTML = '';
+  let buttonsHTML = '';
+
+  imageHTML = "<h1>💔 Fin de la partie 💔</h1>";
+  
+  buttonsHTML = '<button class="end-story" onclick="endStory()"> Fin </button>';
+  buttonsHTML += '<button class="end-story" onclick="restartStory()"> Recommencer </button>';
+
+  screenImage.innerHTML = imageHTML
+  screenAction.innerHTML = buttonsHTML;
+  screenTexte.innerHTML = '';
+  screenInventory.innerHTML = '';
+}
+
 async function restartStory(){
   let idStory = await API('getIdStory');
   transition();
@@ -198,9 +244,13 @@ async function restartStory(){
 }
 
 async function chargePage(){
-  let idStory = await API('getIdStory');
+  let story = await API('getStory');
   let idChapter = await API('getIdChapter');
   let modeScreen = await API('getModeScreen');
+
+  if( !story.idstory ){
+    goTo(1);
+  }
   
   if(idChapter){
     transition();
@@ -209,8 +259,12 @@ async function chargePage(){
   
   document.getElementById('story').className = "mode" + modeScreen;
 
-  if( !idStory ){
-    goTo(1);
+  if(story.rpgmode && idChapter){
+    let life = await API('getLife');
+    if(life <= 0){
+      gameOver();
+      return;
+    }
   }
 
   switch (modeScreen) {
@@ -219,12 +273,20 @@ async function chargePage(){
       // ecran principal
       if(idScreen == "page-main"){
         showImage();
+        if(story.rpgmode){
+          showLife();
+          showInventory();
+        }
       }
 
       // ecran secondaire
       if(idScreen == "page-mobile"){
         showTexte();
         showAction();
+        if(story.rpgmode){
+          showLife();
+          showInventory();
+        }
       }
 
       break;
@@ -233,12 +295,19 @@ async function chargePage(){
       // ecran principal
       if(idScreen == "page-main"){
         showImage();
+        if(story.rpgmode){
+          showLife();
+        }
       }
 
       // ecran secondaire
       if(idScreen == "page-2"){
         showTexte();
         showAction();
+        if(story.rpgmode){
+          showLife();
+          showInventory();
+        }
       }
 
       break;
@@ -248,6 +317,10 @@ async function chargePage(){
       showImage();
       showTexte();
       showAction();
+      if(story.rpgmode){
+          showLife();
+          showInventory();
+        }
       break;
   }
 }

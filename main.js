@@ -72,7 +72,7 @@ const functionMap = {
     idChapter = value.idChapter;
 
     // maj du nb de point de vie
-    if(value.life){
+    if(value.life != undefined){
       life = value.life;
     }
 
