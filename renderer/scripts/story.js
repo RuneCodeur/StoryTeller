@@ -79,19 +79,23 @@ async function showInventory(){
   let inventory = await API('getInventory');
   let Objects = await API('getObjects');
   let htmlInventory = '';
-  htmlInventory += '<ul>';
-
-  inventory.forEach(item => {
-    for (let i = 0; i < Objects.length; i++) {
-      if(Objects[i] && Objects[i].idobject && Objects[i].idobject == item && Objects[i].type == 1){
-        htmlInventory += '<li>' + Objects[i].name + '</li>';
-        break;
+  if(inventory.length > 0){
+    htmlInventory += '<p>Inventaire</p>';
+    htmlInventory += '<ul>';
+    
+    inventory.forEach(item => {
+      for (let i = 0; i < Objects.length; i++) {
+        if(Objects[i] && Objects[i].idobject && Objects[i].idobject == item && Objects[i].type == 1){
+          htmlInventory += '<li>' + Objects[i].name + '</li>';
+          break;
+        }
       }
-    }
-  });
-  
-  htmlInventory += '</ul>';
-  screenInventory .innerHTML = htmlInventory;
+    });
+    
+    htmlInventory += '</ul>';
+    screenInventory.innerHTML = htmlInventory;
+  }
+
 }
 
 async function showLife(){

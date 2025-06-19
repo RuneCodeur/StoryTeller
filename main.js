@@ -5,7 +5,7 @@ const path = require('path');
 const db = require("./database");
 const server = require('./server');
 const QRCode = require('qrcode');
-const VERSION = "1.3.4";
+const VERSION = "2.0.0";
 const id = powerSaveBlocker.start('prevent-display-sleep');
 
 const configDefault = { 

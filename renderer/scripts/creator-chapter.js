@@ -219,7 +219,8 @@ async function chargeButtons(){
     let chapters = await API('getChapters');
     let story = await API('getStory');
     let objects = await API('getObjects');
-
+    objects.unshift({idobject: 'null', name:'---'});
+    
     let HTMLbuttons = '';
     let ensembleButons = document.getElementById('ensemble-butons');
     let typeChoice = ['redirection', 'gain objet', 'perte objet', 'echange d\'objet', 'objet requis', 'perte de vie'];
@@ -315,7 +316,6 @@ async function chargeButtons(){
 function buttonObject(name, action, idButton, objects, idObject){
     let html = '';
     html += '<div class="ensemble-button-action"><p>' + name + '</p> <select onchange="updateObject(' + idButton + ', ' + action + ')" class="button-redirect" id="button-action-object-' + idButton + '-' + action + '">';
-    objects.unshift({idobject: 'null', name:'---'});
     for (let x = 0; x < objects.length; x++) {
         let isSelected = '';
         if(idObject && objects[x].idobject == idObject){

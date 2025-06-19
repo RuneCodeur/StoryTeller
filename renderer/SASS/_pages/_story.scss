@@ -24,6 +24,7 @@
         p{
             text-align: left;
             font-size: 1.3rem;
+            text-shadow: 1px -1px 0 white,  -1px 1px 0 white,  1px 1px 0 white,  -1px -1px 0 white;
         }
     }
     #screen-image{
@@ -59,7 +60,9 @@
         width: calc(25% - 20px);
         margin: 10px;
         border-radius: 5px;
+        border: 3px $colorBackground solid;
         background-color: $colorBackground;
+        overflow: hidden;
         #screen-texte{
             display: flex;
             flex: 1;
@@ -87,6 +90,29 @@
             max-height: 40%;
             overflow: auto;
             width: 100%;
+            p{
+                width: 100%;
+                color: $colorHover;
+                text-align: center;
+                font-size: 1.2rem;
+                font-weight: bolder;
+                margin-top: 10px;
+            }
+            ul{
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                overflow-x: hidden;
+                overflow-y: auto;
+                width: 100%;
+                padding: 5px 0;
+                li{
+                    margin: 5px;
+                    border-top: 2px black solid;
+                    width: 100%;
+                }
+            }
         }
     }
     #screen-action{
