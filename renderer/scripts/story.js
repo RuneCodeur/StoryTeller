@@ -42,12 +42,18 @@ async function showImage(){
 async function showTexte(){
   let screenTexte = document.getElementById('screen-texte');
   let idChapter = await API('getIdChapter');
+  let messageStory = await API('getMessageStory');
   let texte = '';
 
   // chapitre en cours
   if(idChapter){
     let chapter = await API('getChapter');
-    texte = '<p>' + chapter.texte.replace(/\n/g, "<br>") + '<p>';
+
+    if(messageStory != ''){
+      texte += '<p class="message-story">' + messageStory.replace(/\n/g, "<br>") + '<p>';
+    }
+
+    texte += '<p>' + chapter.texte.replace(/\n/g, "<br>") + '<p>';
 
     if(chapter.rpgmode && chapter.rpgmode == 1){
       let inventory = await API('getInventory');
@@ -165,6 +171,7 @@ async function actionButon(idButton = null){
   let idGiveObject = null;
   let idDeleteObject = null;
   let life = story.life;
+  let message ='';
 
   if(idButton == null){
     let chapters = await API('getChapters');
@@ -200,6 +207,11 @@ async function actionButon(idButton = null){
         life = 0;
       }
     }
+
+    // message 
+    if(button && button.message){
+      message = button.message;
+    }
   }
 
   let info ={
@@ -209,7 +221,8 @@ async function actionButon(idButton = null){
     screen: idScreen,
     giveObject: idGiveObject,
     deleteObject: idDeleteObject,
-    life: life
+    life: life,
+    messageStory: message
   }
   
   API('navGlobal', info);
@@ -226,10 +239,15 @@ async function gameOver(){
   let screenAction = document.getElementById('screen-action');
   let screenTexte = document.getElementById('screen-texte');
   let screenInventory = document.getElementById('screen-inventory');
+  let messageStory = await API('getMessageStory');
   let imageHTML = '';
   let buttonsHTML = '';
 
   imageHTML = "<h1>💔 Fin de la partie 💔</h1>";
+  
+  if(messageStory != ''){
+    imageHTML += '<p class="message-story">' + messageStory  + '</p>'
+  }
   
   buttonsHTML = '<button class="end-story" onclick="endStory()"> Fin </button>';
   buttonsHTML += '<button class="end-story" onclick="restartStory()"> Recommencer </button>';
@@ -271,6 +289,7 @@ async function chargePage(){
   if(story.rpgmode && idChapter){
     let life = await API('getLife');
     if(life <= 0){
+      showLife();
       gameOver();
       return;
     }

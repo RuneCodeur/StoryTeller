@@ -155,6 +155,17 @@ async function updatePositiveTexteffect(idTexteffect){
     navGlobal();
 }
 
+async function updateButtonMessage(idButton){
+    let value = {
+        message: document.getElementById('button-message-' + idButton).value,
+        idButton: idButton
+    };
+    
+    await API('updateButtonMessage', value);
+    chargeButtons();
+    navGlobal();
+}
+
 async function updateObjectTexteffect(idTexteffect){
     let value = {
         idObject: document.getElementById('object-texteffect-' + idTexteffect).value,
@@ -165,7 +176,6 @@ async function updateObjectTexteffect(idTexteffect){
 }
 
 async function deleteTexteffect(idTexteffect){
-
     await API('deleteTexteffect', idTexteffect);
     chargeTextEffects();
     navGlobal();
@@ -265,6 +275,7 @@ async function chargeButtons(){
 
             case 5: // perte de vie
                 buttonAction += '<div class="ensemble-button-action"><p>Perte de vie</p> <input type="number" onchange="updateLostLife(' + button.idbutton + ')" id="button-lostlife-' + button.idbutton + '" class="button-lostlife" min="1" max="100" value="' + button.lostlife+ '"></div>';
+                buttonAction += '<div class="ensemble-button-action"><p>Message de perte de vie</p> <textarea id="button-message-' + button.idbutton + '" onchange="updateButtonMessage(' + button.idbutton + ')">'+ button.message +'</textarea></div>';
                 redirection = true;
             break;
 

@@ -44,6 +44,7 @@ function initializeDatabase() {
                     giveobject INTEGER DEFAULT NULL,
                     requireobject INTEGER DEFAULT NULL,
                     lostlife INTEGER DEFAULT 0,
+                    message TEXT,
                     FOREIGN KEY(idstory) REFERENCES storys(idstory) ON DELETE CASCADE,
                     FOREIGN KEY(idchapter) REFERENCES chapters(idchapter) ON DELETE CASCADE,
                     FOREIGN KEY(nextchapter) REFERENCES chapters(idchapter) ON DELETE SET NULL,
@@ -335,7 +336,7 @@ function getChapter(idChapter) {
 // récupère tout les boutons du chapitre
 function getButtons(idChapter){
     return new Promise((resolve, reject) => {
-        db.all("SELECT idbutton, name, type, filelink, idchapter, nextchapter, giveobject, requireobject, lostlife FROM buttons WHERE idChapter = ?", [idChapter], (err, rows) => {
+        db.all("SELECT idbutton, name, type, filelink, idchapter, nextchapter, giveobject, requireobject, lostlife, message FROM buttons WHERE idChapter = ?", [idChapter], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -347,7 +348,7 @@ function getButtons(idChapter){
 
 function getButton(idButton){
     return new Promise((resolve, reject) => {
-        db.get("SELECT name, type, filelink, idchapter, nextchapter, giveobject, requireobject, lostlife FROM buttons WHERE idbutton = ?", [idButton], (err, rows) => {
+        db.get("SELECT name, type, filelink, idchapter, nextchapter, giveobject, requireobject, lostlife, message FROM buttons WHERE idbutton = ?", [idButton], (err, rows) => {
             if (err) {
                 reject(err);
             } else {
@@ -696,7 +697,7 @@ function deleteChapter(idChapter) {
 // crée un nouveau bouton
 function createButton(value) {
     return new Promise((resolve, reject) => {
-        db.run("INSERT INTO buttons (idchapter, idstory, name, nextchapter, type) VALUES (?, ?, ?, ?, ?)", [value.idChapter, value.idStory, 'action', value.nextchapter, 0], function(err) {
+        db.run("INSERT INTO buttons (idchapter, idstory, name, nextchapter, type, message) VALUES (?, ?, ?, ?, ?)", [value.idChapter, value.idStory, 'action', value.nextchapter, 0, ''], function(err) {
             if (err) {
                 reject(err);
             }
@@ -738,7 +739,22 @@ function updateButtonName(value) {
 // met à jour le type de 1 bouton
 function updateButtonType(value) {
     return new Promise((resolve, reject) => {
-        db.run("UPDATE buttons SET type = ?, requireobject = null, giveobject = null where idbutton = ?", [value.type, value.idButton], function(err) {
+        db.run("UPDATE buttons SET type = ?, requireobject = null, giveobject = null, message = '' where idbutton = ?", [value.type, value.idButton], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+
+// met à jour le type de 1 bouton
+function updateButtonMessage(value) {
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE buttons SET message = ? where idbutton = ?", [value.message, value.idButton], function(err) {
             if (err) {
                 reject(err);
             }
@@ -852,6 +868,7 @@ module.exports = {
     deleteChapter,
     createButton,
     updateButton,
+    updateButtonMessage,
     updateButtonName,
     updateButtonType,
     updateButtonLostLife,

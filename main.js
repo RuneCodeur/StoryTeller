@@ -5,7 +5,7 @@ const path = require('path');
 const db = require("./database");
 const server = require('./server');
 const QRCode = require('qrcode');
-const VERSION = "2.0.1";
+const VERSION = "2.1.0";
 const id = powerSaveBlocker.start('prevent-display-sleep');
 
 const configDefault = { 
@@ -25,6 +25,7 @@ let mobileSocket = null;
 let modScreen = 1;
 let inventory = [];
 let life = 0;
+let messageStory = '';
 
 const imageFolder = path.join(app.getPath("userData"), "images");
 const audioFolder = path.join(app.getPath("userData"), "audio");
@@ -72,7 +73,7 @@ const functionMap = {
     idChapter = value.idChapter;
 
     // maj du nb de point de vie
-    if(value.life != undefined){
+    if(value.life != undefined ){
       life = value.life;
     }
 
@@ -84,6 +85,10 @@ const functionMap = {
     // supprime l'objet
     if(value.deleteObject){
       functionMap.deleteInvetory(value.deleteObject);
+    }
+
+    if(value.messageStory){
+      messageStory = value.messageStory;
     }
 
     switch (value.screen) {
@@ -122,8 +127,24 @@ const functionMap = {
   },
 
   insertInvetory: (value) =>{
-    inventory.push(value);
+    if(inventory.includes(value)){
+      return inventory;
+    }
+    else{
+      inventory.push(value);
+    }
     return inventory;
+  },
+
+  updateButtonMessage: async (value) => {
+     try {
+      let result = await db.updateButtonMessage(value);
+      return result;
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
   },
 
   deleteInvetory: (value) =>{
@@ -140,6 +161,10 @@ const functionMap = {
 
   getLife: () =>{
     return life;
+  },
+
+  getMessageStory: () =>{
+    return messageStory;
   },
 
   setWifiName: (value) => {
@@ -977,6 +1002,9 @@ ipcMain.handle("get-life", async () => {
   return functionMap.getLife();
 });
 
+ipcMain.handle("get-message-story", async () => {
+  return functionMap.getMessageStory();
+});
 
 ipcMain.handle("select-image-file", async () => {
   return functionMap.selectImageFile();
@@ -1094,6 +1122,10 @@ ipcMain.handle("delete-chapter", async (event, value) => {
 
 ipcMain.handle("create-button", async (event, value) => {
   return functionMap.createButton(value);
+});
+
+ipcMain.handle("update-button-message", async (event, value) => {
+  return functionMap.updateButtonMessage(value);
 });
 
 ipcMain.handle("update-button", async (event, value) => {

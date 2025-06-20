@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   initInventory:() => ipcRenderer.invoke("init-inventory"),
   getInventory:() => ipcRenderer.invoke("get-inventory"),
   getLife:() => ipcRenderer.invoke("get-life"),
+  getMessageStory:() => ipcRenderer.invoke("get-message-story"),
   
   // page création d'histoire
   updateImageChapter: (value) =>ipcRenderer.invoke("update-image-chapter", value),
@@ -54,6 +55,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateButton: (value) => ipcRenderer.invoke("update-button", value),
   updateButtonName: (value) => ipcRenderer.invoke("update-button-name", value),
   updateButtonType: (value) => ipcRenderer.invoke("update-button-type", value),
+  updateButtonMessage: (value) => ipcRenderer.invoke("update-button-message", value),
   updateButtonLostLife: (value) => ipcRenderer.invoke("update-button-lostlife", value),
   updateButtonRequireObject: (value) => ipcRenderer.invoke("update-button-requireobject", value),
   updateButtonGiveObject: (value) => ipcRenderer.invoke("update-button-giveobject", value),
