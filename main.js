@@ -5,7 +5,7 @@ const path = require('path');
 const db = require("./database");
 const server = require('./server');
 const QRCode = require('qrcode');
-const VERSION = "2.0.0";
+const VERSION = "2.0.1";
 const id = powerSaveBlocker.start('prevent-display-sleep');
 
 const configDefault = { 
@@ -116,6 +116,11 @@ const functionMap = {
     return;
   },
 
+  setLife: async (value) => {
+      life = value;
+    return;
+  },
+
   insertInvetory: (value) =>{
     inventory.push(value);
     return inventory;
@@ -129,7 +134,7 @@ const functionMap = {
     return inventory;
   },
 
-  getInvetory: () =>{
+  getInventory: () =>{
     return inventory;
   },
 
@@ -960,8 +965,12 @@ ipcMain.handle("init-inventory", async () => {
   return functionMap.initInventory();
 });
 
+ipcMain.handle("set-life", async (event, value) => {
+  return functionMap.setLife(value);
+});
+
 ipcMain.handle("get-inventory", async () => {
-  return functionMap.getInvetory();
+  return functionMap.getInventory();
 });
 
 ipcMain.handle("get-life", async () => {

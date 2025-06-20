@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getButtons: () => ipcRenderer.invoke("get-buttons"),
   getButton: (value) => ipcRenderer.invoke("get-button", value),
   getObjects: () => ipcRenderer.invoke("get-objects"),
+  setLife:(value) => ipcRenderer.invoke("set-life", value),
   initInventory:() => ipcRenderer.invoke("init-inventory"),
   getInventory:() => ipcRenderer.invoke("get-inventory"),
   getLife:() => ipcRenderer.invoke("get-life"),

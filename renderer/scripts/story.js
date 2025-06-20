@@ -243,6 +243,7 @@ async function gameOver(){
 async function restartStory(){
   let idStory = await API('getIdStory');
   transition();
+  await API('initInventory');
   await pause(900);
   goTo(6, idStory)
 }
@@ -259,6 +260,10 @@ async function chargePage(){
   if(idChapter){
     transition();
     await pause(900);
+  }
+  
+  else if( !idChapter && story.rpgmode && story.life){
+    await API('setLife', story.life)
   }
   
   document.getElementById('story').className = "mode" + modeScreen;
@@ -279,7 +284,6 @@ async function chargePage(){
         showImage();
         if(story.rpgmode){
           showLife();
-          showInventory();
         }
       }
 
