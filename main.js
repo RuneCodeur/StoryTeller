@@ -5,7 +5,7 @@ const path = require('path');
 const db = require("./database");
 const server = require('./server');
 const QRCode = require('qrcode');
-const VERSION = "2.1.0";
+const VERSION = "2.1.1";
 const id = powerSaveBlocker.start('prevent-display-sleep');
 
 const configDefault = { 
@@ -319,6 +319,7 @@ const functionMap = {
       let storyData = null;
       let chaptersKey = {};
       let imagesKey = {};
+      let objectsKey = {};
 
       if(storyFile) {
         const jsonContent = await storyFile.async('string');
@@ -332,9 +333,36 @@ const functionMap = {
         if(storyData.type){
           value.rpgmode = storyData.type
         }
+        
+        if(storyData.rpgmode){
+          value.rpgmode = storyData.rpgmode
+        }
 
         let idStoryImport = await functionMap.createStory(value);
         idStory = idStoryImport;
+
+        if(storyData.life != undefined){
+          await functionMap.updateLifeStory(storyData.life);
+        }
+
+        // importation des objets
+        if(storyData.objects){
+          for (const key of Object.keys(storyData.objects)){
+            if(storyData.objects[key]){
+              
+              let idObject = await functionMap.createObject(); ////////////// -> mettre en clé relationnel
+              objectsKey[key] = idObject;
+
+              let object = {
+                name: storyData.objects[key].name,
+                description: storyData.objects[key].description, 
+                type: storyData.objects[key].type,
+                idObject: idObject
+              }
+              await functionMap.updateObject(object);
+            }
+          }
+        }
         
         // insertion des chapitres
         let init = true;
@@ -374,12 +402,42 @@ const functionMap = {
         for (const key of Object.keys(storyData.chapters)){
           idChapter = chaptersKey[key];
           for (let i = 0; i <  storyData.chapters[key].buttons.length; i++) {
-            let idButton = await functionMap.createButton();
+            let idButton = await functionMap.createButton(idChapter);
+
             let button = {
               name : storyData.chapters[key].buttons[i].name,
               type : storyData.chapters[key].buttons[i].type,
               filelink : storyData.chapters[key].buttons[i].filelink,
+              giveobject: null,
+              requireobject: null,
+              lostlife : 0,
+              message: '',
               idButton : idButton
+            }
+
+            if(storyData.chapters[key].buttons[i].giveobject != undefined){
+              let idGiveobject = null;
+              if(objectsKey[storyData.chapters[key].buttons[i].giveobject]){
+                idGiveobject = objectsKey[storyData.chapters[key].buttons[i].giveobject];
+              }
+              button.giveobject = idGiveobject;
+            }
+            
+            if(storyData.chapters[key].buttons[i].requireobject != undefined){
+              let idRequireobject = null;
+
+              if(objectsKey[storyData.chapters[key].buttons[i].requireobject]){
+                idRequireobject = objectsKey[storyData.chapters[key].buttons[i].requireobject];
+              }
+              button.requireobject = idRequireobject;
+            }
+            
+            if(storyData.chapters[key].buttons[i].lostlife != undefined){
+              button.lostlife = storyData.chapters[key].buttons[i].lostlife;
+            }
+
+            if(storyData.chapters[key].buttons[i].message != undefined){
+              button.message = storyData.chapters[key].buttons[i].message;
             }
 
             if(chaptersKey[storyData.chapters[key].buttons[i].nextchapter]){
@@ -387,6 +445,31 @@ const functionMap = {
             }
 
             await functionMap.updateButton(button);
+          }
+        }
+        
+        // insertion des texteffects
+        for (const key of Object.keys(storyData.chapters)){
+          idChapter = chaptersKey[key];
+          if(storyData.chapters[key].texteffects){
+            
+            for (let i = 0; i <  storyData.chapters[key].texteffects.length; i++) {
+              let idTexteffect = await functionMap.createTexteffect();
+
+              let idObject = null;
+              if(objectsKey[storyData.chapters[key].texteffects[i].idobject]){
+                idObject = objectsKey[storyData.chapters[key].texteffects[i].idobject];
+              }
+
+              let texteffect = {
+                texte : storyData.chapters[key].texteffects[i].texte,
+                positive : storyData.chapters[key].texteffects[i].positive,
+                idObject : idObject,
+                idTexteffect : idTexteffect
+              }
+
+              await functionMap.updateTexteffect(texteffect);
+            }
           }
         }
 
@@ -427,7 +510,9 @@ const functionMap = {
 
     let histoire = {
       title: '',
-      chapters : {}
+      chapters : {},
+      rpgmode : 0,
+      life: 1
     };
 
     if(story){
@@ -435,6 +520,20 @@ const functionMap = {
       histoire.title = story.name;
 
       let chapters = await db.getAllChapters(id);
+
+      if(story.rpgmode){
+        let objects = await db.getObjects(id);
+        histoire.rpgmode = story.rpgmode;
+        histoire.life = story.life;
+        histoire.objects = [];
+
+        for (let i = 0; i < objects.length; i++) {
+          histoire.objects[objects[i].idobject] = {};
+          histoire.objects[objects[i].idobject].name = objects[i].name;
+          histoire.objects[objects[i].idobject].description = objects[i].description;
+          histoire.objects[objects[i].idobject].type = objects[i].type;
+        }
+      }
     
       for (let i = 0; i < chapters.length; i++) {
         let buttons = await db.getButtons(chapters[i].idchapter);
@@ -452,7 +551,23 @@ const functionMap = {
             filelink: buttons[ib].filelink,
             idchapter: buttons[ib].idchapter,
             nextchapter: buttons[ib].nextchapter,
-          })
+            giveobject: buttons[ib].giveobject,
+            requireobject: buttons[ib].requireobject,
+            lostlife: buttons[ib].lostlife,
+            message: buttons[ib].message
+          });
+        }
+
+        if(story.rpgmode){
+          let texteffects = await db.getTexteffects(chapters[i].idchapter);
+            histoire.chapters[chapters[i].idchapter].texteffects = [];
+           for (let it = 0; it < texteffects.length; it++) {
+              histoire.chapters[chapters[i].idchapter].texteffects.push({
+              texte: texteffects[it].texte,
+              idobject: texteffects[it].idobject,
+              positive: texteffects[it].positive,
+            });
+          }
         }
 
         if(chapters[i].imagelink){
@@ -787,6 +902,28 @@ const functionMap = {
   updateButton: async (value) => {
     try {
       let result = await db.updateButton(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updateTexteffect: async (value) => {
+    try {
+      let result = await db.updateTexteffect(value);
+      return result
+    }
+    catch (err) {
+      console.error("erreur:", err);
+      return {error: err.message}
+    }
+  },
+
+  updateObject : async (value) => {
+    try {
+      let result = await db.updateObject(value);
       return result
     }
     catch (err) {

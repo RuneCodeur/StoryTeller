@@ -501,6 +501,19 @@ return new Promise((resolve, reject) => {
     });
 }
 
+function updateTexteffect(value){
+    return new Promise((resolve, reject) => {
+        db.run("UPDATE texteffects SET texte = ?, positive = ? , idobject = ? where idtexteffect = ?", [value.texte, value.positive, value.idObject, value.idTexteffect], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
 function updateTexteTexteffect(value){
     return new Promise((resolve, reject) => {
         db.run("UPDATE texteffects SET texte = ? where idtexteffect = ?", [value.texte, value.idTexteffect], function(err) {
@@ -581,6 +594,20 @@ function createChapter(idStory) {
 function updateChapter(value) {
     return new Promise((resolve, reject) => {
         db.run("UPDATE chapters SET name = ?, texte = ? where idchapter = ?", [value.name, value.texte, value.idChapter], function(err) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(this.lastID);
+            }
+        });
+    });
+}
+
+function updateObject(value) {
+    return new Promise((resolve, reject) => {
+        
+        db.run("UPDATE objects SET description = ?, type = ?, name = ? where idobject = ?", [value.description, value.type, value.name, value.idObject], function(err) {
             if (err) {
                 reject(err);
             }
@@ -697,7 +724,7 @@ function deleteChapter(idChapter) {
 // crée un nouveau bouton
 function createButton(value) {
     return new Promise((resolve, reject) => {
-        db.run("INSERT INTO buttons (idchapter, idstory, name, nextchapter, type, message) VALUES (?, ?, ?, ?, ?)", [value.idChapter, value.idStory, 'action', value.nextchapter, 0, ''], function(err) {
+        db.run("INSERT INTO buttons (idchapter, idstory, name, nextchapter, type, message) VALUES (?, ?, ?, ?, ?, ?)", [value.idChapter, value.idStory, 'action', value.nextchapter, 0, ' '], function(err) {
             if (err) {
                 reject(err);
             }
@@ -711,7 +738,7 @@ function createButton(value) {
 // met à jour 1 bouton
 function updateButton(value) {
     return new Promise((resolve, reject) => {
-        db.run("UPDATE buttons SET name = ?, type = ?, filelink = ?, nextchapter = ? where idbutton = ?", [value.name, value.type, value.filelink, value.nextChapter, value.idButton], function(err) {
+        db.run("UPDATE buttons SET name = ?, type = ?, filelink = ?, nextchapter = ?, giveobject = ?, requireobject = ?, lostlife = ?, message = ? where idbutton = ?", [value.name, value.type, value.filelink, value.nextChapter, value.giveobject, value.requireobject, value.lostlife, value.message, value.idButton], function(err) {
             if (err) {
                 reject(err);
             }
@@ -847,6 +874,7 @@ module.exports = {
     createObject,
     createTexteffect,
     updateTexteTexteffect,
+    updateTexteffect,
     updatePositiveTexteffect,
     updateObjectTexteffect,
     deleteTexteffect,
@@ -860,6 +888,7 @@ module.exports = {
     deleteObject,
     createChapter,
     updateChapter,
+    updateObject,
     updateObjectName,
     updateObjectDescription,
     updateObjectType,
