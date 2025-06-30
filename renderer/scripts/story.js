@@ -201,7 +201,7 @@ async function actionButon(idButton = null){
     }
 
     // perte de vie
-    if(button && button.lostlife){
+    if(button && button.lostlife  && button.type == 5){
       life = life - button.lostlife;
       if(life < 0){
         life = 0;
